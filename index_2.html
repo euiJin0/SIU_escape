@@ -88,9 +88,8 @@ body {
   </div>
 </div>
 
-<!-- // 고모 영상 (소리만 재생) -->
-<video id="voice" src="testVideo.mp4" style="display:none;"></video> 
-
+<!-- // 고모 오디오 (소리만 재생) -->
+<audio id="audio" src="testVideo.mp4"></audio>
 
 <script>
 // 번호 가져오기
@@ -122,16 +121,17 @@ setInterval(() => {
 // 🎧 특정 번호일 때만 소리 재생
 window.onload = () => {
   if (number === "01099999999") {
-    const video = document.getElementById("voice");
+    const audio = document.getElementById("voice");
 
-    // 아이폰 대응 (소리 재생 허용)
-    video.muted = false;
-    video.play().catch(() => {
+    // 모바일 대응 (사용자 행동 이후라 재생 가능)
+    audio.play().catch(() => {
       console.log("자동재생 차단됨");
     });
-    video.onended = () => {
+
+    // 🎬 끝나면 전화 종료
+    audio.onended = () => {
       setTimeout(() => {
-      endCall();
+        endCall();
       }, 2000); // 2초 후 종료
     };
   }
