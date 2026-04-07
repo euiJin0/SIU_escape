@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>컴퓨터 잠금화면</title>
+
+<style>
+
+  /* ===== 스타일 네임스페이스: 호스트(구글사이트)와 충돌 방지 ===== */
+
+  html,body{margin:0;overflow:hidden;background:#fff; height:100%; /* 추가 */} /* 스크롤 제거 */
+    
+  #qz{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;
+
+      color:#111;display:flex;justify-content:center;align-items:center;padding:12px; min-height:100vh; /* 추가 */}
+
+  #qz .card{width:min(92vw,520px);background:#fff;border-radius:14px;padding:20px 18px;
+
+      box-shadow:0 4px 12px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.04); text-align:center;}
+
+  #qz h1{margin:0 0 8px;font-size:22px;font-weight:800;letter-spacing:-.02em;}
+
+  #qz .hint{margin:0 0 14px;color:#777;font-size:14px}
+
+  #qz .field{display:flex;flex-direction:column;gap:10px}
+
+  #qz input[type=text]{height:46px;border-radius:10px;border:1.5px solid #ddd;padding:0 12px;font-size:16px;outline:none}
+
+  #qz input[type=text]:focus{border-color:#99c2ff;box-shadow:0 0 0 3px rgba(153,194,255,.28)}
+
+  #qz .btn{height:48px;border:none;border-radius:10px;font-weight:800;font-size:16px;cursor:pointer;color:#2b2b2b;
+
+      background:linear-gradient(180deg,#ffb000,#f39a00);box-shadow:0 3px 8px rgba(255,176,0,.25)}
+
+  #qz .msg{display:none;margin-top:10px;font-size:15px}
+
+  #qz .msg.error{color:#c62828}
+
+  #qz .ok{display:none;margin-top:12px}
+
+  #qz .ok .pill{display:inline-flex;gap:8px;align-items:center;padding:6px 10px;border-radius:999px;
+
+      background:rgba(10,127,63,.1);color:#0a7f3f;font-weight:800}
+
+  #qz .ok .dot{width:10px;height:10px;border-radius:50%;background:#0a7f3f}
+
+  #qz .next{display:block;width:100%;margin-top:10px;text-align:center;text-decoration:none;font-weight:800;
+
+      padding:12px 14px;border-radius:10px;color:#1a2a66;background:#f5f8ff;border:1px solid #d5e2ff}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="qz">
+
+  <main class="card">
+
+    <h1 id="qz-title"></h1>
+
+    <p class="hint" id="qz-hint"></p>
+
+
+    <div class="field">
+
+      <input id="qz-input" type="text" autocomplete="off" placeholder="정답 입력" inputmode="text">
+
+      <button class="btn" id="qz-check" type="button">확인</button>
+
+    </div>
+
+
+    <div id="qz-error" class="msg error" role="alert"></div>
+
+
+    <div id="qz-ok" class="ok" aria-live="polite">
+
+      <span class="pill"><span class="dot"></span><span id="qz-ok-text"></span></span>
+
+      <a id="qz-next" class="next" href="#" target="_blank" rel="noopener">다음 활동 열기</a>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<script>
+
+  /* ======== 여기만 수정 ======== */
+
+  const CFG = {
+
+    title: "암호",
+
+    hint: "숫자가 아니다 ==3",
+
+    answers: ["시니어산업","시니어 산업"], // 복수정답, 공백은 비교에서 자동 무시
+
+    nextURL: "c:\Users\dmlwl\OneDrive\바탕 화면\silver_idea_contest (4).html",
+
+    successMsg: "잠금을 해제합니다",
+
+    errorMsg: "맞지 않는 암호입니다."
+
+  };
+
+  /* ======== 끝 ======== */
+
+
+  // --- UI 엘리먼트
+
+  const $title = document.getElementById("qz-title");
+
+  const $hint  = document.getElementById("qz-hint");
+
+  const $inp   = document.getElementById("qz-input");
+
+  const $btn   = document.getElementById("qz-check");
+
+  const $err   = document.getElementById("qz-error");
+
+  const $okBox = document.getElementById("qz-ok");
+
+  const $okTxt = document.getElementById("qz-ok-text");
+
+  const $next  = document.getElementById("qz-next");
+
+
+  // --- 초기 세팅
+
+  $title.textContent = CFG.title;
+
+  $hint.textContent  = CFG.hint;
+
+
+  // --- 유틸
+
+  const norm = s => (s ?? "").trim().toLowerCase().replace(/\s+/g,"").normalize("NFC");
+
+  const answersNorm = CFG.answers.map(norm);
+
+
+  function showError(msg){ $err.textContent = msg; $err.style.display = "block"; }
+
+  function showOk(msg,url){ $okTxt.textContent = msg; $next.href = url; $okBox.style.display = "block"; }
+
+
+  // --- Web Audio: 딩동댕 / 땡 (외부 파일 X)
+
+  let ctx;
+
+  function ac(){ return ctx ||= new (window.AudioContext||window.webkitAudioContext)(); }
+
+  function tone(f, d=0.22, type="sine", start=0, gain=0.16){
+
+    const c = ac(), t0 = c.currentTime + start, o = c.createOscillator(), g = c.createGain();
+
+    o.type = type; o.frequency.value = f;
+
+    g.gain.setValueAtTime(0.0001, t0);
+
+    g.gain.exponentialRampToValueAtTime(gain, t0+0.02);
+
+    g.gain.exponentialRampToValueAtTime(0.0001, t0+d);
+
+    o.connect(g).connect(c.destination); o.start(t0); o.stop(t0+d+0.02);
+
+  }
+
+  function sfxCorrect(){ tone(784,0.18,"sine",0,0.18); tone(523.25,0.18,"sine",0.18,0.18); tone(1046.5,0.22,"sine",0.36,0.2); }
+
+  function sfxWrong(){ tone(220,0.22,"square",0,0.18); tone(196,0.22,"square",0,0.10); tone(220,0.20,"square",0.24,0.16); }
+
+
+  // --- 체크
+
+  function check(){
+
+    $err.style.display = "none"; $okBox.style.display = "none";
+
+    const v = norm($inp.value);
+
+    if(!v){ showError(CFG.errorMsg); sfxWrong(); return; }
+
+    if(answersNorm.includes(v)){ showOk(CFG.successMsg, CFG.nextURL); sfxCorrect(); }
+
+    else { showError(CFG.errorMsg); sfxWrong(); }
+
+  }
+
+
+  $btn.addEventListener("click", check);
+
+  $inp.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); check(); } else $err.style.display = "none"; });
+
+</script>
+
+</body>
+
+</html>
