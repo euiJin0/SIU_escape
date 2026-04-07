@@ -1,1 +1,871 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아이디어를 제공받습니다 — 미래연구소</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --paper: #f5f0e8;
+    --gold: #b8860b;
+    --gold-light: #d4a843;
+    --rust: #8b3a1a;
+    --muted: #6b6358;
+    --rule: #c8b89a;
+    --cream: #ede8db;
+    --white: #faf8f4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 300;
+    line-height: 1.8;
+  }
+
+  /* HEADER / MASTHEAD */
+  .masthead {
+    background: var(--ink);
+    color: var(--paper);
+    text-align: center;
+    padding: 18px 20px 14px;
+    letter-spacing: 0.3em;
+    font-size: 0.7rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    border-bottom: 3px solid var(--gold);
+  }
+
+  .masthead-date {
+    opacity: 0.6;
+    font-size: 0.65rem;
+    margin-top: 4px;
+    letter-spacing: 0.2em;
+  }
+
+  /* TOP RULE */
+  .top-rule {
+    height: 6px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--gold) 0px,
+      var(--gold) 40px,
+      var(--ink) 40px,
+      var(--ink) 44px
+    );
+  }
+
+  /* NEWSPAPER CONTAINER */
+  .newspaper {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* SECTION LABEL */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 0 12px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .section-label span {
+    background: var(--rust);
+    color: white;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    font-weight: 700;
+    padding: 3px 10px;
+    text-transform: uppercase;
+  }
+
+  .section-label .line {
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .section-label .org {
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    font-weight: 400;
+  }
+
+  /* HERO HEADLINE */
+  .hero {
+    padding: 40px 0 0;
+    text-align: center;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 36px;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.35em;
+    color: var(--rust);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .hero-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+
+  .hero-title em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  .hero-subtitle {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.05rem;
+    color: var(--muted);
+    font-weight: 400;
+    max-width: 560px;
+    margin: 0 auto 28px;
+    line-height: 1.7;
+  }
+
+  .hero-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 24px 0 0;
+  }
+  .hero-divider span {
+    width: 60px; height: 1px; background: var(--rule);
+  }
+  .hero-divider .diamond {
+    width: 7px; height: 7px;
+    background: var(--gold);
+    transform: rotate(45deg);
+  }
+
+  /* PULL QUOTE */
+  .pull-quote {
+    border-left: 4px solid var(--gold);
+    border-right: 4px solid var(--gold);
+    margin: 36px 0;
+    padding: 20px 32px;
+    background: var(--cream);
+    text-align: center;
+  }
+
+  .pull-quote p {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  /* ARTICLE COLUMNS */
+  .article-intro {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.08rem;
+    line-height: 1.85;
+    color: var(--ink);
+    padding: 36px 0 24px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .article-intro .lead {
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  /* INFO GRID */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin: 36px 0;
+    border: 2px solid var(--ink);
+  }
+
+  @media (max-width: 600px) {
+    .info-grid { grid-template-columns: 1fr; }
+  }
+
+  .info-cell {
+    padding: 28px 28px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .info-cell:nth-child(even) { border-right: none; }
+  .info-cell:nth-last-child(-n+2) { border-bottom: none; }
+  @media (max-width: 600px) {
+    .info-cell { border-right: none; }
+    .info-cell:last-child { border-bottom: none; }
+    .info-cell:nth-last-child(-n+2) { border-bottom: 1px solid var(--rule); }
+    .info-cell:last-child { border-bottom: none; }
+  }
+
+  .info-cell-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    font-weight: 700;
+    color: var(--rust);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .info-cell-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .info-cell h3 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .info-cell p, .info-cell li {
+    font-size: 0.88rem;
+    color: #3a3028;
+    line-height: 1.85;
+  }
+
+  .info-cell ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .info-cell ul li::before {
+    content: '— ';
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  /* AWARD TABLE */
+  .award-section {
+    margin: 40px 0;
+  }
+
+  .section-heading {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--ink);
+    padding-bottom: 10px;
+    border-bottom: 3px double var(--ink);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .section-heading small {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .award-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  .award-table thead tr {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .award-table thead th {
+    padding: 12px 18px;
+    text-align: left;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  .award-table tbody tr {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .award-table tbody tr:nth-child(even) {
+    background: var(--cream);
+  }
+
+  .award-table td {
+    padding: 14px 18px;
+    vertical-align: middle;
+  }
+
+  .rank-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  .rank-badge.silver { background: #888; }
+  .rank-badge.bronze { background: #a0714f; }
+  .rank-badge.special { background: var(--rust); }
+
+  .prize-amount {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--rust);
+  }
+
+  /* BODY ARTICLE TEXT */
+  .body-article {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    margin: 40px 0;
+    padding: 36px 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  @media (max-width: 640px) {
+    .body-article { grid-template-columns: 1fr; gap: 24px; }
+  }
+
+  .body-text p {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 0.95rem;
+    line-height: 1.95;
+    margin-bottom: 16px;
+    color: #2a2018;
+  }
+
+  .body-text p:first-child::first-letter {
+    float: left;
+    font-size: 4.2rem;
+    line-height: 0.75;
+    font-weight: 900;
+    color: var(--gold);
+    padding-right: 8px;
+    padding-top: 6px;
+    font-family: 'Noto Serif KR', serif;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    border-left: 2px solid var(--rule);
+    padding-left: 28px;
+  }
+
+  .sidebar-box {
+    margin-bottom: 28px;
+    padding-bottom: 28px;
+    border-bottom: 1px dashed var(--rule);
+  }
+
+  .sidebar-box:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .sidebar-box-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.3em;
+    font-weight: 700;
+    color: var(--rust);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .sidebar-box p {
+    font-size: 0.84rem;
+    color: #3a3028;
+    line-height: 1.8;
+  }
+
+  .sidebar-box a {
+    color: var(--rust);
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .sidebar-box a:hover {
+    border-color: var(--rust);
+  }
+
+  .highlight-num {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 2.4rem;
+    font-weight: 900;
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  /* HOW TO SUBMIT */
+  .steps {
+    margin: 36px 0;
+    counter-reset: step;
+  }
+
+  .step {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px dotted var(--rule);
+    align-items: flex-start;
+  }
+
+  .step:last-child { border-bottom: none; margin-bottom: 0; }
+
+  .step-num {
+    counter-increment: step;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 900;
+    font-size: 0.85rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-content strong {
+    display: block;
+    font-size: 0.92rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+
+  .step-content p {
+    font-size: 0.85rem;
+    color: #4a4038;
+    line-height: 1.7;
+  }
+
+  /* CTA */
+  .cta-bar {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 40px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 40px 0 0;
+    flex-wrap: wrap;
+  }
+
+  .cta-bar h2 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .cta-bar p {
+    font-size: 0.82rem;
+    opacity: 0.65;
+    margin-top: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  .cta-btn {
+    background: var(--gold);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+
+  .cta-btn:hover { background: var(--gold-light); }
+
+  /* FOOTER */
+  footer {
+    background: var(--cream);
+    border-top: 3px double var(--ink);
+    text-align: center;
+    padding: 28px 20px;
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    line-height: 2;
+  }
+
+  /* DECORATIVE RULES */
+  .triple-rule {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin: 32px 0;
+  }
+  .triple-rule div:nth-child(1) { height: 3px; background: var(--ink); }
+  .triple-rule div:nth-child(2) { height: 1px; background: var(--gold); }
+  .triple-rule div:nth-child(3) { height: 1px; background: var(--ink); }
+
+  /* ANIMATION */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero, .article-intro, .info-grid, .award-section, .body-article {
+    animation: fadeUp 0.7s ease both;
+  }
+
+  .info-grid { animation-delay: 0.15s; }
+  .award-section { animation-delay: 0.25s; }
+  .body-article { animation-delay: 0.35s; }
+
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<div class="top-rule"></div>
+<div class="masthead">
+  미래연구소 공식 공고 &nbsp;|&nbsp; FUTURE RESEARCH INSTITUTE
+  <div class="masthead-date">2025년 공모전 시즌 — 제1호</div>
+</div>
+
+<main class="newspaper">
+
+  <!-- SECTION LABEL -->
+  <div class="section-label">
+    <span>공 모 전</span>
+    <div class="line"></div>
+    <span class="org">미래연구소</span>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">아이디어 공모 · Open Call for Ideas</div>
+    <h1 class="hero-title">
+      아이디어를<br>
+      <em>제공받습니다</em>
+    </h1>
+    <p class="hero-subtitle">
+      초고령사회를 더 나은 내일로 이끌 혁신적인 아이디어를 모집합니다.<br>
+      당신의 생각이 실버산업의 미래를 바꿀 수 있습니다.
+    </p>
+    <div class="hero-divider">
+      <span></span>
+      <div class="diamond"></div>
+      <span></span>
+    </div>
+  </section>
+
+  <!-- LEAD ARTICLE -->
+  <div class="article-intro">
+    <span class="lead">미래연구소가 초고령사회 해법을 찾는 아이디어 공모전을 개최합니다.</span>
+    전국 누구나 참여 가능한 이번 공모는 고령층의 삶의 질 향상, 사회 참여 확대, 돌봄·기술·산업 혁신 등 다양한 분야에 걸친 신선하고 실현 가능한 아이디어를 환영합니다. 제출된 아이디어는 전문가 심사를 거쳐 우수 작품에 상금 및 사업화 기회를 부여할 예정입니다.
+  </div>
+
+  <div class="triple-rule"><div></div><div></div><div></div></div>
+
+  <!-- KEY INFO GRID -->
+  <div class="info-grid">
+
+    <div class="info-cell">
+      <div class="info-cell-label">접수 기간</div>
+      <h3>2025년 3월 3일(월)<br>— 4월 30일(수)</h3>
+      <p>오후 6시 마감 (한국 표준시)<br>마감일 이후 접수 불가</p>
+    </div>
+
+    <div class="info-cell">
+      <div class="info-cell-label">발표 일정</div>
+      <h3>서류 심사 · 6월 13일<br>최종 발표 · 6월 27일</h3>
+      <p>개별 이메일 및 홈페이지 공지<br>수상자 별도 개별 연락 예정</p>
+    </div>
+
+    <div class="info-cell">
+      <div class="info-cell-label">지원 자격</div>
+      <h3>제한 없음<br>누구나 참여 가능</h3>
+      <ul>
+        <li>개인 또는 팀(최대 3인) 지원</li>
+        <li>중복 출품 가능 (작품당 1건)</li>
+        <li>기관·법인 소속 무관</li>
+        <li>타 공모전 수상작 제외</li>
+      </ul>
+    </div>
+
+    <div class="info-cell">
+      <div class="info-cell-label">주제 분야</div>
+      <h3>실버산업 전 분야</h3>
+      <ul>
+        <li>돌봄·요양·복지 서비스</li>
+        <li>헬스케어·의료 기술</li>
+        <li>주거·생활 환경 개선</li>
+        <li>사회 참여·일자리 창출</li>
+        <li>디지털·AI 기반 솔루션</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- PULL QUOTE -->
+  <div class="pull-quote">
+    <p>"초고령사회의 문제를 가장 잘 아는 사람이<br>가장 좋은 해답을 갖고 있습니다."</p>
+  </div>
+
+  <!-- AWARD SECTION -->
+  <div class="award-section">
+    <h2 class="section-heading">시상 내역 <small>Awards &amp; Prizes</small></h2>
+    <table class="award-table">
+      <thead>
+        <tr>
+          <th>등급</th>
+          <th>상금</th>
+          <th>시상 수</th>
+          <th>비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="rank-badge">대 상</span></td>
+          <td><span class="prize-amount">500만 원</span></td>
+          <td>1팀</td>
+          <td>연구소장상 · 사업화 검토 기회</td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge silver">최우수상</span></td>
+          <td><span class="prize-amount">300만 원</span></td>
+          <td>1팀</td>
+          <td>연구소장상</td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge bronze">우 수 상</span></td>
+          <td><span class="prize-amount">100만 원</span></td>
+          <td>2팀</td>
+          <td>연구소장상</td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge special">장 려 상</span></td>
+          <td><span class="prize-amount">30만 원</span></td>
+          <td>5팀</td>
+          <td>연구소장상</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top:12px; font-size:0.78rem; color:var(--muted);">* 상금은 제세공과금 22% 공제 후 지급됩니다. &nbsp;·&nbsp; 수상작은 연구소 온라인·오프라인 전시에 활용될 수 있습니다.</p>
+  </div>
+
+  <div class="triple-rule"><div></div><div></div><div></div></div>
+
+  <!-- BODY + SIDEBAR -->
+  <div class="body-article">
+    <div class="body-text">
+      <h2 class="section-heading" style="margin-bottom:20px;">공모 배경 <small>Background</small></h2>
+      <p>우리나라는 2025년 기준 65세 이상 고령 인구 비율이 전체 인구의 20%를 넘어서며 본격적인 초고령사회에 진입했습니다. 미래연구소는 이 변화를 사회적 부담이 아닌, 새로운 가능성의 시대로 전환할 혁신적 아이디어를 전국 각지에서 발굴하고자 합니다.</p>
+      <p>전문가가 아니어도 좋습니다. 할머니·할아버지와 함께 생활하며 느낀 불편함, 요양 현장에서 매일 마주하는 현실, 기술로 해결하고 싶은 작은 문제 하나—그 모두가 우리가 찾는 아이디어의 씨앗입니다.</p>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="sidebar-box">
+        <div class="sidebar-box-label">주 최</div>
+        <p>
+          <strong style="color:var(--ink);">미래연구소</strong><br>
+          후원: 보건복지부 (예정)
+        </p>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-bar">
+    <div>
+      <h2>지금 바로 참여하세요</h2>
+      <p>접수 마감 · 2025년 4월 30일 오후 6시</p>
+    </div>
+    <button class="cta-btn" onclick="openQuiz()">아이디어 제출하기</button>
+  </div>
+
+</main>
+
+<!-- QUIZ MODAL -->
+<div id="quizOverlay" style="display:none; position:fixed; inset:0; background:rgba(20,16,10,0.72); z-index:1000; align-items:center; justify-content:center;">
+  <div id="quizBox" style="background:var(--paper); max-width:520px; width:92%; border-top:5px solid var(--gold); box-shadow:0 24px 60px rgba(0,0,0,0.35); padding:40px 40px 36px; position:relative; animation:fadeUp 0.3s ease;">
+    <button onclick="closeQuiz()" style="position:absolute; top:16px; right:20px; background:none; border:none; font-size:1.4rem; cursor:pointer; color:var(--muted); line-height:1;">✕</button>
+
+    <div id="quizScreen">
+      <div style="font-size:0.65rem; letter-spacing:0.3em; color:var(--rust); font-weight:700; text-transform:uppercase; margin-bottom:8px;">제출 전 확인 퀴즈</div>
+      <h2 style="font-family:'Noto Serif KR',serif; font-size:1.4rem; font-weight:900; margin-bottom:6px; color:var(--ink);">잠깐! 퀴즈를 풀어주세요</h2>
+      <p style="font-size:0.82rem; color:var(--muted); margin-bottom:24px;">네 문제를 모두 맞히면 제출이 완료됩니다.</p>
+      <div style="height:1px; background:var(--rule); margin-bottom:24px;"></div>
+
+      <!-- Q1 -->
+      <div style="margin-bottom:20px;">
+        <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--ink); margin-bottom:8px; line-height:1.7;">
+          1. 시니어의 나이대는 <span style="border-bottom:2px solid var(--gold); padding:0 4px;">__</span> ~ <span style="border-bottom:2px solid var(--gold); padding:0 4px;">__</span> 대 이다.
+        </label>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <input id="q1a" type="text" placeholder="시작 나이대" oninput="clearError()" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--rule)'" style="flex:1; padding:11px 13px; border:1.5px solid var(--rule); background:var(--white); font-family:'Noto Sans KR',sans-serif; font-size:0.88rem; color:var(--ink); outline:none; transition:border-color 0.2s;">
+          <span style="color:var(--muted); font-weight:700;">~</span>
+          <input id="q1b" type="text" placeholder="끝 나이대" oninput="clearError()" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--rule)'" style="flex:1; padding:11px 13px; border:1.5px solid var(--rule); background:var(--white); font-family:'Noto Sans KR',sans-serif; font-size:0.88rem; color:var(--ink); outline:none; transition:border-color 0.2s;">
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div style="margin-bottom:20px;">
+        <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--ink); margin-bottom:8px; line-height:1.7;">
+          2. 시니어는 <span style="border-bottom:2px solid var(--gold); padding:0 4px;">___</span> 의 대상이 아닌, <span style="border-bottom:2px solid var(--gold); padding:0 4px;">___</span> 이다.
+        </label>
+        <div style="display:flex; gap:10px;">
+          <input id="q2a" type="text" placeholder="첫 번째 빈칸" oninput="clearError()" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--rule)'" style="flex:1; padding:11px 13px; border:1.5px solid var(--rule); background:var(--white); font-family:'Noto Sans KR',sans-serif; font-size:0.88rem; color:var(--ink); outline:none; transition:border-color 0.2s;">
+          <input id="q2b" type="text" placeholder="두 번째 빈칸" oninput="clearError()" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--rule)'" style="flex:1; padding:11px 13px; border:1.5px solid var(--rule); background:var(--white); font-family:'Noto Sans KR',sans-serif; font-size:0.88rem; color:var(--ink); outline:none; transition:border-color 0.2s;">
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div style="margin-bottom:20px;">
+        <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--ink); margin-bottom:8px; line-height:1.7;">
+          3. 시니어 소비자는 가격보다 <span style="border-bottom:2px solid var(--gold); padding:0 4px;">___</span> 과 <span style="border-bottom:2px solid var(--gold); padding:0 4px;">___</span> 를 더 중시하는 경향이 있다.
+        </label>
+        <div style="display:flex; gap:10px;">
+          <input id="q3a" type="text" placeholder="첫 번째 빈칸" oninput="clearError()" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--rule)'" style="flex:1; padding:11px 13px; border:1.5px solid var(--rule); background:var(--white); font-family:'Noto Sans KR',sans-serif; font-size:0.88rem; color:var(--ink); outline:none; transition:border-color 0.2s;">
+          <input id="q3b" type="text" placeholder="두 번째 빈칸" oninput="clearError()" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--rule)'" style="flex:1; padding:11px 13px; border:1.5px solid var(--rule); background:var(--white); font-family:'Noto Sans KR',sans-serif; font-size:0.88rem; color:var(--ink); outline:none; transition:border-color 0.2s;">
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div style="margin-bottom:24px;">
+        <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--ink); margin-bottom:8px; line-height:1.7;">
+          4. 2050년 초고령사회의 위기를 막기 위해, 지금 우리에게 필요한 것은 시니어 산업과 모든 산업을 <span style="border-bottom:2px solid var(--gold); padding:0 4px;">____</span> 하는 것이다.
+        </label>
+        <input id="q4" type="text" placeholder="정답을 입력하세요" oninput="clearError()" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--rule)'" style="width:100%; padding:11px 13px; border:1.5px solid var(--rule); background:var(--white); font-family:'Noto Sans KR',sans-serif; font-size:0.88rem; color:var(--ink); outline:none; transition:border-color 0.2s;">
+      </div>
+
+      <div id="quizError" style="display:none; background:#fff0ec; border-left:3px solid var(--rust); padding:10px 14px; font-size:0.82rem; color:var(--rust); margin-bottom:16px;">
+        ❌ 정답이 틀렸습니다. 다시 한 번 확인해 주세요.
+      </div>
+
+      <button onclick="checkAnswers()" onmouseover="this.style.background='var(--rust)'" onmouseout="this.style.background='var(--ink)'" style="width:100%; padding:15px; background:var(--ink); color:var(--paper); border:none; cursor:pointer; font-family:'Noto Sans KR',sans-serif; font-size:0.88rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; transition:background 0.2s;">
+        제출하기
+      </button>
+    </div>
+
+    <div id="successScreen" style="display:none; text-align:center; padding:16px 0;">
+      <div style="font-size:3rem; margin-bottom:16px;">🎉</div>
+      <div style="font-size:0.65rem; letter-spacing:0.3em; color:var(--rust); font-weight:700; text-transform:uppercase; margin-bottom:12px;">제출 완료</div>
+      <h2 style="font-family:'Noto Serif KR',serif; font-size:1.7rem; font-weight:900; color:var(--ink); line-height:1.4; margin-bottom:12px;">아이디어 제공<br>감사합니다!</h2>
+      <div style="height:1px; background:var(--rule); margin:20px 0;"></div>
+      <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">소중한 아이디어가 접수되었습니다.<br>심사 결과는 이메일로 안내드릴 예정입니다.<br><br><strong style="color:var(--ink);">미래연구소</strong>가 함께하겠습니다.</p>
+      <button onclick="closeQuiz()" style="margin-top:24px; padding:12px 36px; background:var(--gold); color:white; border:none; font-family:'Noto Sans KR',sans-serif; font-size:0.85rem; font-weight:700; letter-spacing:0.1em; cursor:pointer;">닫기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openQuiz() {
+    document.getElementById('quizOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeQuiz() {
+    document.getElementById('quizOverlay').style.display = 'none';
+    document.body.style.overflow = '';
+    ['q1a','q1b','q2a','q2b','q3a','q3b','q4'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.value = ''; el.style.borderColor = 'var(--rule)'; }
+    });
+    document.getElementById('quizError').style.display = 'none';
+    document.getElementById('quizScreen').style.display = 'block';
+    document.getElementById('successScreen').style.display = 'none';
+  }
+  function clearError() {
+    document.getElementById('quizError').style.display = 'none';
+  }
+  function normalize(str) {
+    return str.trim().replace(/\s+/g, '').toLowerCase();
+  }
+  function checkAnswers() {
+    const a1a = normalize(document.getElementById('q1a').value);
+    const a1b = normalize(document.getElementById('q1b').value);
+    const a2a = normalize(document.getElementById('q2a').value);
+    const a2b = normalize(document.getElementById('q2b').value);
+    const a3a = normalize(document.getElementById('q3a').value);
+    const a3b = normalize(document.getElementById('q3b').value);
+    const a4  = normalize(document.getElementById('q4').value);
+
+    const ok1 = ['50','50대'].includes(a1a) && ['70','70대'].includes(a1b);
+    const ok2 = ['복지'].includes(a2a) && ['소비자'].includes(a2b);
+    const ok3 = ['품질'].includes(a3a) && ['신뢰'].includes(a3b);
+    const ok4 = ['융합'].includes(a4);
+
+    if (ok1 && ok2 && ok3 && ok4) {
+      document.getElementById('quizScreen').style.display = 'none';
+      document.getElementById('successScreen').style.display = 'block';
+    } else {
+      document.getElementById('quizError').style.display = 'block';
+      document.getElementById('q1a').style.borderColor = ok1 ? 'var(--rule)' : 'var(--rust)';
+      document.getElementById('q1b').style.borderColor = ok1 ? 'var(--rule)' : 'var(--rust)';
+      document.getElementById('q2a').style.borderColor = ['복지'].includes(a2a) ? 'var(--rule)' : 'var(--rust)';
+      document.getElementById('q2b').style.borderColor = ['소비자'].includes(a2b) ? 'var(--rule)' : 'var(--rust)';
+      document.getElementById('q3a').style.borderColor = ['품질'].includes(a3a) ? 'var(--rule)' : 'var(--rust)';
+      document.getElementById('q3b').style.borderColor = ['신뢰'].includes(a3b) ? 'var(--rule)' : 'var(--rust)';
+      document.getElementById('q4').style.borderColor = ok4 ? 'var(--rule)' : 'var(--rust)';
+    }
+  }
+  document.getElementById('quizOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeQuiz();
+  });
+</script>
+
+<footer style="background:var(--cream); border-top:3px double var(--ink); text-align:center; padding:28px 20px; font-size:0.75rem; color:var(--muted); letter-spacing:0.1em; line-height:2;">
+  ⓒ 2025 미래연구소 · FUTURE RESEARCH INSTITUTE<br>
+  본 공고의 무단 복제 및 변경을 금합니다. &nbsp;|&nbsp; 문의: 02-000-0000
+</footer>
+
+</body>
+</html>
 
