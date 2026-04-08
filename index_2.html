@@ -89,12 +89,19 @@ body {
 </div>
 
 <!-- // 고모 오디오 (소리만 재생) -->
-<audio id="audio" src="testOudio.m4a"></audio>
+<audio id="audio" src="testAudio.m4a"></audio>
 
 <script>
 // 번호 가져오기
 const params = new URLSearchParams(location.search);
 const number = params.get("num");
+
+// 🎧 특정 번호면 자동 종료 타이머
+if (number === "01099999999") {
+  setTimeout(() => {
+    endCall();
+  }, 20000); // 2초 후 종료
+}
 
 // 📒 동일한 연락처
 const contacts = {
@@ -123,16 +130,14 @@ window.onload = () => {
   if (number === "01099999999") {
     const audio = document.getElementById("audio");
 
-    // 모바일 대응 (사용자 행동 이후라 재생 가능)
     audio.play().catch(() => {
       console.log("자동재생 차단됨");
     });
 
-    // 🎬 끝나면 전화 종료
     audio.onended = () => {
       setTimeout(() => {
         endCall();
-      }, 2000); // 2초 후 종료
+      }, 2000);
     };
   }
 };
