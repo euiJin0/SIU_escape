@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>공중전화 퍼즐</title>
+<style>
+  /* ===== 네임스페이스 & 기본 ===== */
+  html,body{margin:0;overflow:hidden;background:#e2e5e8;}
+  #pay{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;
+       height:100vh;display:flex;justify-content:center;align-items:center;padding:20px 5px;}
+
+  /* PC에서는 더 컴팩트하게 */
+  @media (min-width: 768px) {
+    #pay {
+      height:auto;
+      min-height:100vh;
+      padding:20px;
+    }
+  }
+
+  /* 모바일 최적화: 작은 화면에서는 높이를 동적으로 조정 */
+  @media (max-height: 800px) {
+    #pay {
+      height:auto;
+      min-height:auto;
+      align-items:flex-start;
+      padding-top:8px;
+      padding-bottom:8px;
+    }
+  }
+
+  @media (max-height: 700px) {
+    #pay {
+      padding-top:5px;
+      padding-bottom:5px;
+    }
+  }
+
+  /* ===== 공중전화 바디 ===== */
+
+  /* #pay .phone{
+
+    width:min(95vw, 520px);
+
+    border-radius:16px;
+
+    background:
+
+      radial-gradient(180px 60px at 20% -20%, rgba(255,255,255,.9), transparent 60%),
+
+      linear-gradient(145deg,#b3bcc3,#8d9aa6);
+
+    box-shadow:
+
+      inset 0 1px 0 rgba(255,255,255,.6),
+
+      inset 0 -8px 16px rgba(0,0,0,.15),
+
+      0 18px 40px rgba(0,0,0,.28), 0 4px 10px rgba(0,0,0,.18);
+
+    padding:12px 12px 10px;
+
+    position:relative;
+
+  } */
+
+  /* PC에서는 원래 크기로 */
+  @media (min-width: 768px) {
+    #pay .phone {
+      padding:18px 18px 16px;
+      border-radius:18px;
+    }
+  }
+
+  @media (max-height: 700px) {
+    #pay .phone {
+      padding:8px 8px 6px;
+      border-radius:12px;
+    }
+  }
+
+  @media (max-height: 650px) {
+    #pay .phone {
+      padding:6px 6px 4px;
+      border-radius:10px;
+    }
+  }
+
+  /* 장식(동전 투입구 느낌) */
+
+  /* #pay .slot{
+    position:absolute; right:12px; top:10px;
+    width:56px; height:18px; border-radius:3px;
+    background: linear-gradient(180deg,#2b2b2b,#0f0f0f);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 2px 4px rgba(0,0,0,.25);
+  }
+
+  #pay .slot::after{
+    content:""; position:absolute; left:5px; right:5px; top:6px; height:5px;
+    background: linear-gradient(180deg,#131313,#050505);
+    border-radius:2px;
+  } */
+
+  /* PC에서는 원래 크기로 */
+  @media (min-width: 768px) {
+    #pay .slot {
+      right:16px;
+      top:14px;
+      width:64px;
+      height:22px;
+      border-radius:4px;
+    }
+
+    #pay .slot::after {
+      left:6px;
+      right:6px;
+      top:8px;
+      height:6px;
+    }
+  }
+
+  @media (max-height: 650px) {
+    #pay .slot {
+      width:48px;
+      height:14px;
+      right:8px;
+      top:6px;
+    }
+
+    #pay .slot::after {
+      left:4px;
+      right:4px;
+      top:4px;
+      height:4px;
+    }
+  }
+
+  /* 수화기(장식) */
+
+  /* #pay .handset{
+    position:absolute; left:-20px; top:48px; width:18px; height:140px; border-radius:10px;
+    background:linear-gradient(180deg,#1f2629,#0f1416);
+    box-shadow: 0 8px 18px rgba(0,0,0,.35);
+  } */
+
+
+  /* PC에서는 원래 크기로 */
+  @media (min-width: 768px) {
+    #pay .handset {
+      left:-24px;
+      top:56px;
+      width:22px;
+      height:180px;
+      border-radius:12px;
+    }
+  }
+
+  @media (max-height: 650px) {
+    #pay .handset {
+      left:-16px;
+      top:36px;
+      width:14px;
+      height:110px;
+      border-radius:8px;
+    }
+  }
+
+  /* 제목 */
+  #pay h3{
+    margin:0 0 6px; text-align:center; color:#0b1f28;
+    letter-spacing:-.01em; font-size:15px; font-weight:800;
+  }
+
+  @media (max-height: 700px) {
+    #pay h3 {
+      font-size:13px;
+      margin:0 0 4px;
+    }
+  }
+
+  @media (max-height: 650px) {
+    #pay h3 {
+      font-size:12px;
+      margin:0 0 3px;
+    }
+  }
+
+  /* 디스플레이(옛 LED 느낌) */
+  #pay .display{
+    background:
+      linear-gradient(180deg,#13322e,#0c2220);
+    border:2px solid #0e181b;
+    border-radius:8px;
+    color:#aef0c4;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "D2Coding", monospace;
+    letter-spacing: .04em;
+    padding:8px 10px;
+    margin: 2px 0 8px;
+    box-shadow:
+      inset 0 2px 12px rgba(0,0,0,.6),
+      0 2px 0 rgba(255,255,255,.15);
+    min-height:20px;
+    text-align:center;
+    font-weight:700;
+    font-size:13px;
+  }
+
+  @media (max-height: 700px) {
+    #pay .display {
+      padding:6px 8px;
+      margin:2px 0 6px;
+      min-height:18px;
+      font-size:12px;
+    }
+  }
+
+  @media (max-height: 650px) {
+    #pay .display {
+      padding:5px 7px;
+      margin:1px 0 5px;
+      min-height:16px;
+      font-size:11px;
+    }
+  }
+
+  #pay .sub{
+    text-align:center; color:#2b3f48; font-size:11px; margin:-3px 0 6px;
+  }
+
+  @media (max-height: 700px) {
+    #pay .sub {
+      font-size:10px;
+      margin:-2px 0 4px;
+    }
+  }
+
+  @media (max-height: 650px) {
+    #pay .sub {
+      font-size:9px;
+      margin:-1px 0 3px;
+    }
+  }
+
+  /* 키패드 */
+  #pay .pad{
+    display:grid; grid-template-columns: repeat(3,1fr); gap:8px;
+  }
+
+  @media (max-height: 650px) {
+    #pay .pad {
+      gap:6px;
+    }
+  }
+
+  #pay .btn{
+    height:46px; border:none; border-radius:10px; cursor:pointer;
+    color:#f2f6f7; font-weight:900; font-size:15px; letter-spacing:.02em;
+    background:
+      linear-gradient(180deg,#374349,#1b2327);
+    box-shadow:
+      inset 0 2px 6px rgba(255,255,255,.05),
+      inset 0 -8px 10px rgba(0,0,0,.3),
+      0 6px 14px rgba(0,0,0,.25);
+    transition: transform .06s ease, filter .15s ease, background .15s ease;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  @media (max-height: 750px) {
+    #pay .btn {
+      height:42px;
+      font-size:14px;
+    }
+  }
+
+  @media (max-height: 700px) {
+    #pay .btn {
+      height:38px;
+      font-size:13px;
+    }
+  }
+
+  @media (max-height: 650px) {
+    #pay .btn {
+      height:35px;
+      font-size:12px;
+      border-radius:8px;
+    }
+  }
+
+  #pay .btn:active{ transform: translateY(1px); }
+  #pay .btn.red{ background: linear-gradient(180deg,#6a2424,#341313); }
+
+
+  /* 제어 버튼 줄 */
+  #pay .row{ display:grid; grid-template-columns: repeat(3,1fr); gap:6px; margin-top:6px; }
+  @media (max-height: 700px) {
+    #pay .row {
+      gap:5px;
+      margin-top:4px;
+    }
+  }
+
+  @media (max-height: 650px) {
+    #pay .row {
+      gap:4px;
+      margin-top:3px;
+    }
+  }
+
+  #pay .wide{
+    grid-column: 1/-1; height:40px; border:none; border-radius:10px; cursor:pointer; font-weight:900;
+    background: linear-gradient(180deg,#ffb000,#f39a00); color:#2b2b2b;
+    box-shadow: 0 3px 8px rgba(255,176,0,.28);
+    font-size:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  @media (max-height: 700px) {
+    #pay .wide {
+      height:36px;
+      font-size:12px;
+    }
+  }
+
+  @media (max-height: 650px) {
+    #pay .wide {
+      height:33px;
+      font-size:11px;
+      border-radius:8px;
+    }
+  }
+
+  #pay .ghost{
+    grid-column: span 1; height:40px; border-radius:10px; border:1.5px solid #41525a; color:#eef3f6;
+    background: linear-gradient(180deg,#28353b,#1a2429);
+    font-size:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font-weight:900;
+  }
+
+  @media (max-height: 700px) {
+    #pay .ghost {
+      height:36px;
+      font-size:11px;
+    }
+  }
+
+  @media (max-height: 650px) {
+    #pay .ghost {
+      height:33px;
+      font-size:10px;
+      border-radius:8px;
+    }
+  }
+
+  /* 결과 & 다음 링크 */
+
+  #pay .msg{ display:none; margin-top:5px; text-align:center; font-weight:900; font-size:12px;}
+
+
+  @media (max-height: 700px) {
+
+    #pay .msg {
+
+      margin-top:4px;
+
+      font-size:11px;
+
+    }
+
+  }
+
+
+  @media (max-height: 650px) {
+
+    #pay .msg {
+
+      margin-top:3px;
+
+      font-size:10px;
+
+    }
+
+  }
+
+
+  #pay .ok{ color:#0d7a3a; }
+
+  #pay .err{ color:#a82525; }
+
+  #pay .next{
+
+    display:none; margin-top:5px; text-align:center; text-decoration:none; font-weight:900;
+
+    padding:8px 10px; border-radius:10px;
+
+    color:#172a67; background:#eef3ff; border:1px solid #cddcff;
+
+    font-size:12px;
+
+  }
+
+
+  @media (max-height: 700px) {
+
+    #pay .next {
+
+      margin-top:4px;
+
+      padding:6px 8px;
+
+      font-size:11px;
+
+    }
+
+  }
+
+
+  @media (max-height: 650px) {
+
+    #pay .next {
+
+      margin-top:3px;
+
+      padding:5px 7px;
+
+      font-size:10px;
+
+      border-radius:8px;
+
+    }
+
+  }
+
+</style>
+
+</head>
+
+<body>
+
+<div id="pay">
+
+  <main class="phone" aria-live="polite">
+
+    <div class="slot" aria-hidden="true"></div>
+
+    <div class="handset" aria-hidden="true"></div>
+
+
+    <h3 id="title">알맞은 숫자를 입력하시오</h3>
+
+    <div id="display" class="display"></div>
+
+    <div id="sub" class="sub">알맞은 숫자를 입력 후 확인 버튼을 누르시오. </div>
+
+
+    <!-- 키패드: 글자(공/유/원/칙/확/인) + 숫자 + 특수키 -->
+
+    <section class="pad" id="pad"></section>
+
+
+    <section class="row">
+
+      <button type="button" class="ghost" id="delBtn">← 지우기</button>
+
+      <button type="button" class="ghost" id="clearBtn">다시하기</button>
+
+      <button type="button" class="wide"  id="callBtn">확인</button>
+
+    </section>
+
+
+    <div class="msg ok"  id="okMsg"></div>
+
+    <div class="msg err" id="errMsg"></div>
+
+    <a class="next" id="nextLink" href="#" target="_blank" rel="noopener">다음 활동 열기</a>
+
+  </main>
+
+</div>
+
+
+<script>
+
+/* ============ 여기만 수정 ============ */
+
+const CFG = {
+
+  // 정답 문자열(공백은 자동 무시). 복수 정답을 쓰려면 배열로 ["정답1","정답2"]도 OK
+
+  answer: "0612",
+
+  nextURL: "https://euijin0.github.io/SIU_escape/testVideo.mp4",  
+
+  successMsg: "연결 가능합니다! (정답입니다)",
+
+  errorMsg: "오답입니다. 다시 시도해 보세요.",
+
+
+  // 키패드 라벨(원하시면 바꿔도 됨)
+
+  keys: ["1","2","3","4","5","6","7","8","9","#","0","*"]
+
+};
+
+/* ============ 수정 끝 ============ */
+
+
+let value = "";   // 누적 입력값
+
+const $display = document.getElementById("display");
+
+const $ok = document.getElementById("okMsg");
+
+const $err = document.getElementById("errMsg");
+
+const $next = document.getElementById("nextLink");
+
+document.getElementById("title").textContent = "알맞은 숫자를 입력하시오";
+
+
+const $pad = document.getElementById("pad");
+
+CFG.keys.forEach(k => {
+
+  const b = document.createElement("button");
+
+  b.type="button";
+
+  b.className = "btn" + ((k==="*"||k==="#") ? " red":"");
+
+  b.textContent = k;
+
+  b.addEventListener("click", () => { press(k); });
+
+  $pad.appendChild(b);
+
+});
+
+
+document.getElementById("delBtn").addEventListener("click", backspace);
+
+document.getElementById("clearBtn").addEventListener("click", resetAll);
+
+document.getElementById("callBtn").addEventListener("click", callCheck);
+
+
+function updateDisplay(){
+
+  $display.textContent = value || " ";
+
+}
+
+function normalize(s){ return (s??"").toString().trim().replace(/\s+/g,"").normalize("NFC"); }
+
+function hideMsgs(){ $ok.style.display="none"; $err.style.display="none"; $next.style.display="none"; }
+
+
+/* ---- 입력/편집 ---- */
+
+function press(k){
+
+  // 누를 때마다 소리
+
+  playKeySound(k);
+
+  // 입력
+
+  value += k;
+
+  updateDisplay();
+
+  hideMsgs();
+
+}
+
+function backspace(){
+
+  if(!value){ sfxTap(); return; }
+
+  value = value.slice(0,-1);
+
+  updateDisplay();
+
+  sfxBack();
+
+  hideMsgs();
+
+}
+
+function resetAll(){
+
+  value = "";
+
+  updateDisplay();
+
+  sfxReset();
+
+  hideMsgs();
+
+}
+
+
+/* ---- 검사 ---- */
+
+function callCheck(){
+
+  hideMsgs();
+
+  const typed = normalize(value);
+
+  const answers = Array.isArray(CFG.answer) ? CFG.answer : [CFG.answer];
+
+  const ok = answers.map(normalize).includes(typed);
+
+  if(ok){
+
+    $ok.textContent = CFG.successMsg;
+
+    $ok.style.display = "block";
+
+    $next.href = CFG.nextURL;
+
+    $next.style.display = "block";
+
+    sfxCorrect();
+
+  }else{
+
+    $err.textContent = CFG.errorMsg;
+
+    $err.style.display = "block";
+
+    sfxWrong();
+
+  }
+
+}
+
+
+/* ===== Web Audio: DTMF & 효과음 ===== */
+
+let AC;
+
+function ctx(){ return AC ||= new (window.AudioContext||window.webkitAudioContext)(); }
+
+function env(c, duration=0.15, start=0, gain=0.18){
+
+  const g = c.createGain(), t0 = c.currentTime + start;
+
+  g.gain.setValueAtTime(0.0001, t0);
+
+  g.gain.exponentialRampToValueAtTime(gain, t0+0.015);
+
+  g.gain.exponentialRampToValueAtTime(0.0001, t0+duration);
+
+  return {g, t0, end:t0+duration+0.02};
+
+}
+
+function toneOnce(f, duration=0.15, type="sine", start=0, gain=0.18){
+
+  const c = ctx();
+
+  const {g,t0,end} = env(c,duration,start,gain);
+
+  const o = c.createOscillator(); o.type=type; o.frequency.value=f;
+
+  o.connect(g).connect(c.destination); o.start(t0); o.stop(end);
+
+}
+
+function dualTone(f1,f2, duration=0.12, gain=0.12){
+
+  const c = ctx();
+
+  const {g,t0,end} = env(c,duration,0,gain);
+
+  const o1 = c.createOscillator(), o2=c.createOscillator();
+
+  o1.type="sine"; o2.type="sine"; o1.frequency.value=f1; o2.frequency.value=f2;
+
+  o1.connect(g); o2.connect(g); g.connect(c.destination);
+
+  o1.start(t0); o2.start(t0); o1.stop(end); o2.stop(end);
+
+}
+
+// DTMF 표준 주파수
+
+const DTMF = {
+
+  "1":[697,1209], "2":[697,1336], "3":[697,1477],
+
+  "4":[770,1209], "5":[770,1336], "6":[770,1477],
+
+  "7":[852,1209], "8":[852,1336], "9":[852,1477],
+
+  "*":[941,1209], "0":[941,1336], "#":[941,1477]
+
+};
+
+function playKeySound(k){
+
+  if(DTMF[k]) dualTone(DTMF[k][0],DTMF[k][1],0.11,0.12);
+
+  else toneOnce(880,0.06,"triangle",0,0.10); // 글자 키는 짧은 클릭음
+
+}
+
+// 결과음
+
+function sfxCorrect(){ toneOnce(784,0.14,"sine",0,0.18); toneOnce(523.25,0.14,"sine",0.14,0.18); toneOnce(1046.5,0.18,"sine",0.28,0.20); }
+
+function sfxWrong(){ dualTone(220,196,0.22,0.18); toneOnce(220,0.18,"square",0.22,0.16); }
+
+function sfxBack(){ toneOnce(392,0.07,"triangle",0,0.10); }
+
+function sfxTap(){ toneOnce(880,0.05,"triangle",0,0.08); }
+
+function sfxReset(){ toneOnce(523.25,0.06,"sine",0,0.08); toneOnce(659.25,0.06,"sine",0.07,0.08); }
+
+
+// 초기 표시
+
+updateDisplay();
+
+</script>
+
+</body>
+
+</html>
