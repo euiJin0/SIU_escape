@@ -121,7 +121,7 @@ setInterval(() => {
 // 🎧 특정 번호일 때만 소리 재생
 window.onload = () => {
   if (number === "01099999999") {
-    const audio = document.getElementById("voice");
+    const audio = document.getElementById("audio");
 
     // 모바일 대응 (사용자 행동 이후라 재생 가능)
     audio.play().catch(() => {
