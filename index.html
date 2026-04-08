@@ -162,7 +162,15 @@ function del() {
 
 function call() {
   if (input) {
-    location.href = "index_2.html?num=" + input;  }
+
+    // 🔥 여기 추가
+    if (input === "01099999999") {
+      const audio = new Audio("testAudio.m4a");
+      audio.play();
+    }
+
+    location.href = "index_2.html?num=" + input;
+  }
 }
 </script>
 
