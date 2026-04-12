@@ -1,152 +1,187 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>방탈출 예약 시스템</title>
     <style>
-        /* 디자인 부분 */
-        body { font-family: sans-serif; background: #2c2c3e; color: white; text-align: center; padding: 20px; }
-        .container { max-width: 500px; margin: auto; background: #3b3b4f; padding: 30px; border-radius: 15px; }
-        .time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
-        button { padding: 10px; border: none; border-radius: 5px; cursor: pointer; transition: 0.2s; }
-        .available { background: #4a4a6a; color: #fff; }
-        .available:hover { background: #6a6a8a; }
-        .booked { background: #222; color: #666; cursor: not-allowed; opacity: 0.6; }
-        .selected { background: #e91e63 !important; color: white; font-weight: bold; }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 5px; border: none; box-sizing: border-box; }
-        label { display: block; text-align: left; margin-top: 10px; font-size: 0.9em; color: #ccc; }
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+        .container { max-width: 500px; margin: auto; border: 1px solid #ccc; padding: 20px; border-radius: 10px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; box-sizing: border-box; }
+        
+        /* 시간 선택 버튼 스타일 */
+        .time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .time-btn { padding: 10px; border: 1px solid #ddd; background: #f9f9f9; cursor: pointer; text-align: center; }
+        .time-btn.selected { background: #007bff; color: white; border-color: #007bff; }
+        .time-btn:disabled { background: #eee; color: #aaa; cursor: not-allowed; }
+
+        .submit-btn { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .submit-btn:disabled { background: #94d3a2; }
+
+        #staff-section { margin-top: 30px; border-top: 2px solid #333; padding-top: 20px; }
+        .hidden { display: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>📅 날짜 선택</h2>
-    <input type="date" id="res-date" min="2026-04-27" max="2026-04-30">
-
-    <div id="time-section" style="display:none;">
-        <h3>⏰ 시간 선택</h3>
-        <div id="time-grid" class="time-grid"></div>
+    <h2>🔒 방탈출 예약하기</h2>
+    
+    <div class="form-group">
+        <label>날짜 선택 (4/27 ~ 4/30 한정)</label>
+        <input type="date" id="res-date" min="2026-04-27" max="2026-04-30">
     </div>
 
-    <div id="info-section" style="display:none; margin-top:30px; border-top: 1px solid #555; padding-top: 20px;">
-        <label>대표자 성함</label>
-        <input type="text" id="user-name" placeholder="이름을 입력하세요">
-        
-        <label>인원 선택</label>
-        <select id="user-count">
+    <div class="form-group">
+        <label>시간 선택 (10:00 ~ 17:30)</label>
+        <div id="time-slots" class="time-grid">
+            </div>
+    </div>
+
+    <div class="form-group">
+        <label>대표자 이름</label>
+        <input type="text" id="res-name" placeholder="성함을 입력하세요">
+    </div>
+
+    <div class="form-group">
+        <label>인원 수</label>
+        <select id="res-count">
             <option value="2">2명</option>
             <option value="3">3명</option>
             <option value="4">4명</option>
         </select>
-        
-        <label>연락처</label>
-        <input type="tel" id="user-phone" placeholder="010-0000-0000">
-        
-        <button id="submit-btn" onclick="submitBooking()" style="background:#e91e63; width:100%; color:white; font-weight:bold; height: 50px; margin-top: 20px; font-size: 1.1em;">예약 확정하기</button>
+    </div>
+
+    <div class="form-group">
+        <label>전화번호</label>
+        <input type="tel" id="res-phone" placeholder="010-0000-0000">
+    </div>
+
+    <button class="submit-btn" id="confirm-btn" onclick="makeReservation()">예약 확정</button>
+
+    <div id="staff-section">
+        <button onclick="showStaffLogin()">스태프 관리 페이지</button>
+        <div id="staff-content" class="hidden">
+            <h3>📋 예약 내역 확인</h3>
+            <table id="res-table">
+                <thead>
+                    <tr>
+                        <th>날짜</th>
+                        <th>시간</th>
+                        <th>이름</th>
+                        <th>인원</th>
+                    </tr>
+                </thead>
+                <tbody id="res-list"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
-    // ⚠️ 주의: 구글 앱 스크립트 배포 후 받은 URL을 반드시 여기에 붙여넣으세요!
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwNSqQ-ecrUM5FqhBBeCPB-Vb6jIuqQ-AZKJe4qha01arteWricUMNibiDxULs7Pg_Q/exec";
-    
-    let selectedTime = "";
-    const times = [];
-    
-    // 10:00부터 17:30까지 30분 간격 생성
-    for(let h=10; h<=17; h++) {
-        times.push(`${h}:00`);
-        times.push(`${h}:30`);
-    }
+    // 1. 초기 설정 및 시간 데이터 생성 (10:00 ~ 17:30, 30분 간격)
+    const timeSlotsContainer = document.getElementById('time-slots');
+    let selectedTime = null;
+    let reservations = []; // 실제 개발 시에는 DB나 로컬스토리지를 사용합니다.
 
-    // 날짜 선택 시 이벤트
-    document.getElementById('res-date').addEventListener('change', function() {
-        document.getElementById('time-section').style.display = 'block';
-        document.getElementById('info-section').style.display = 'none'; // 날짜 바뀌면 정보입력창 숨김
-        selectedTime = ""; 
-        renderTimes(this.value);
-    });
+    function generateTimeSlots() {
+        timeSlotsContainer.innerHTML = '';
+        let start = 10 * 60; // 10:00 (분을 단위로 계산)
+        let end = 17 * 60 + 30; // 17:30
 
-    // 시간 버튼 생성 및 예약 막기 로직
-    async function renderTimes(date) {
-        const grid = document.getElementById('time-grid');
-        grid.innerHTML = "<p style='grid-column: span 3;'>예약 현황 확인 중...</p>";
-        
-        try {
-            const response = await fetch(SCRIPT_URL);
-            const bookedData = await response.json();
+        for (let time = start; time <= end; time += 30) {
+            let h = Math.floor(time / 60);
+            let m = time % 60;
+            let timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
             
-            grid.innerHTML = "";
-            times.forEach(t => {
-                // 시트 데이터와 비교 (날짜 형식을 yyyy-mm-dd로 맞춰서 비교)
-                const isBooked = bookedData.some(row => {
-                    if(!row[0] || row[0] === "date") return false;
-                    const formattedRowDate = new Date(row[0]).toISOString().split('T')[0];
-                    return formattedRowDate === date && row[1].toString() === t.toString();
-                });
-
-                const btn = document.createElement('button');
-                btn.innerHTML = `<strong>${t}</strong><br>${isBooked ? "예약불가" : "예약가능"}`;
-                btn.className = isBooked ? "booked" : "available";
-                
-                if(!isBooked) {
-                    btn.onclick = () => {
-                        selectedTime = t;
-                        document.querySelectorAll('.available').forEach(b => b.classList.remove('selected'));
-                        btn.classList.add('selected');
-                        document.getElementById('info-section').style.display = 'block';
-                    };
-                } else {
-                    btn.disabled = true;
-                }
-                grid.appendChild(btn);
-            });
-        } catch (e) {
-            grid.innerHTML = "<p style='color:red;'>데이터를 불러오지 못했습니다.</p>";
-        }
-    }
-
-    // 예약 제출 함수
-    async function submitBooking() {
-        const submitBtn = document.getElementById('submit-btn');
-        const data = {
-            date: document.getElementById('res-date').value,
-            time: selectedTime,
-            name: document.getElementById('user-name').value,
-            count: document.getElementById('user-count').value,
-            phone: document.getElementById('user-phone').value
-        };
-
-        if(!data.name || !data.phone || !selectedTime) {
-            return alert("모든 정보를 입력하고 시간 버튼을 클릭해주세요.");
-        }
-
-        // 중복 클릭 방지 (속도 개선을 위해 즉시 반응)
-        submitBtn.disabled = true;
-        submitBtn.innerText = "⏳ 예약 처리 중...";
-
-        try {
-            const res = await fetch(SCRIPT_URL, {
-                method: "POST",
-                body: JSON.stringify(data)
-            });
-
-            const result = await res.text();
+            const btn = document.createElement('button');
+            btn.className = 'time-btn';
+            btn.innerText = timeStr;
+            btn.onclick = () => selectTime(timeStr, btn);
             
-            if(result === "SUCCESS") {
-                alert("✅ 예약이 완료되었습니다!");
-                location.reload(); 
-            } else if(result === "ALREADY_BOOKED") {
-                alert("❌ 그새 다른 분이 예약하셨네요! 다른 시간을 선택해주세요.");
-                renderTimes(data.date);
+            // 이미 예약된 시간인지 확인
+            const date = document.getElementById('res-date').value;
+            if (reservations.some(r => r.date === date && r.time === timeStr)) {
+                btn.disabled = true;
             }
-        } catch (e) {
-            alert("연결 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerText = "예약 확정하기";
+
+            timeSlotsContainer.appendChild(btn);
         }
     }
+
+    // 시간 선택 함수
+    function selectTime(time, btn) {
+        document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedTime = time;
+    }
+
+    // 2. 예약 실행 함수
+    function makeReservation() {
+        const date = document.getElementById('res-date').value;
+        const name = document.getElementById('res-name').value;
+        const phone = document.getElementById('res-phone').value;
+        const count = document.getElementById('res-count').value;
+        const btn = document.getElementById('confirm-btn');
+
+        if (!date || !selectedTime || !name || !phone) {
+            alert("모든 정보를 입력하고 시간을 선택해 주세요.");
+            return;
+        }
+
+        // 중복 클릭 방지를 위해 버튼 잠시 비활성화
+        btn.disabled = true;
+        btn.innerText = "처리 중...";
+
+        setTimeout(() => {
+            // 데이터 저장
+            const newRes = { date, time: selectedTime, name, count, phone };
+            reservations.push(newRes);
+
+            alert(`${name}님, ${selectedTime} 예약이 확정되었습니다!`);
+            
+            // 초기화
+            document.getElementById('res-name').value = '';
+            document.getElementById('res-phone').value = '';
+            selectedTime = null;
+            btn.disabled = false;
+            btn.innerText = "예약 확정";
+            generateTimeSlots(); // 예약 완료 후 시간표 새로고침 (해당 시간 비활성화)
+        }, 500); // 0.5초 후 완료 처리 (응답 속도 체감 개선)
+    }
+
+    // 3. 스태프 관리 로직
+    function showStaffLogin() {
+        const password = prompt("스태프 비밀번호를 입력하세요:");
+        if (password === "1234") { // 비밀번호 예시
+            document.getElementById('staff-content').classList.remove('hidden');
+            renderStaffTable();
+        } else {
+            alert("비밀번호가 틀렸습니다.");
+        }
+    }
+
+    function renderStaffTable() {
+        const list = document.getElementById('res-list');
+        list.innerHTML = '';
+        reservations.forEach(r => {
+            const row = `<tr><td>${r.date}</td><td>${r.time}</td><td>${r.name}</td><td>${r.count}명</td></tr>`;
+            list.innerHTML += row;
+        });
+    }
+
+    // 날짜 변경 시 시간표 새로고침
+    document.getElementById('res-date').addEventListener('change', generateTimeSlots);
+    
+    // [수정] 페이지 로드 시 초기 설정 (4월 27일 고정)
+    window.onload = () => {
+        const dateInput = document.getElementById('res-date');
+        dateInput.value = "2026-04-27"; // 기본값 설정
+        generateTimeSlots();
+    };
 </script>
 
 </body>
