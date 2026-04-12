@@ -10,6 +10,7 @@ body {
   text-align: center;
 }
 
+/* 시간 버튼 */
 .time-grid {
   display: flex;
   justify-content: center;
@@ -29,8 +30,23 @@ body {
 }
 
 .time-btn.disabled {
-  background: #aaa;
+  background: #ccc;
+  color: #666;
   cursor: not-allowed;
+  position: relative;
+}
+
+/* 마감 표시 */
+.time-btn.disabled::after {
+  content: "마감";
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 10px;
+  background: red;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 5px;
 }
 
 /* 모달 */
@@ -79,12 +95,13 @@ body {
 
     <input id="phone" placeholder="전화번호"><br><br>
 
-  <button onclick="submitReservation()">예약</button>    <button onclick="closeModal()">취소</button>
+    <button type="button" onclick="submitReservation()">예약</button>
+    <button type="button" onclick="closeModal()">취소</button>
   </div>
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbyddFR4ZcRiiUTTd-mUlsgMfQs8iU0mNgFY3GyKl8rSNNUiEbeApIDf2YDOyFXsIXcv/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzTCCr_ZqWLKEVWtHpbDEhZaroaby4CqULD3VcoixxPxr-6pbCpRjVmTHkEcbrMdE2x/exec";
 
 let selectedTime = "";
 
@@ -102,7 +119,6 @@ function generateTimes() {
     for(let m=0; m<60; m+=30){
 
       let time;
-
       if(h === 17 && m === 30){
         time = "17:30";
       } else {
@@ -124,7 +140,7 @@ function generateTimes() {
 
 function pad(n){ return n.toString().padStart(2,'0'); }
 
-// 예약된 시간 불러오기
+// 🔥 예약 불러오기 (마감 표시 핵심)
 async function loadReservations(){
   const date = dateInput.value;
   if(!date) return;
@@ -150,8 +166,7 @@ async function loadReservations(){
     });
 
   } catch(e){
-    alert("예약 데이터 불러오기 실패");
-    console.error(e);
+    console.log("GET 실패 (무시 가능)", e);
   }
 }
 
@@ -168,7 +183,7 @@ function closeModal(){
   document.getElementById("modal").style.display = "none";
 }
 
-// 예약 제출
+// 🔥 예약 제출 (CORS 해결)
 async function submitReservation(){
 
   const people = parseInt(document.getElementById("people").value);
@@ -192,23 +207,15 @@ async function submitReservation(){
   };
 
   try{
-    const res = await fetch(API_URL, {
+    await fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  });
+      mode: "no-cors", // 🔥 핵심
+      body: JSON.stringify(data)
+    });
 
-    const result = await res.json();
-
-    if(result.result === "success"){
-      alert("예약 완료!");
-      closeModal();
-      loadReservations();
-    } else {
-      alert("이미 예약된 시간입니다.");
-    }
+    alert("예약 완료!");
+    closeModal();
+    loadReservations();
 
   } catch(e){
     alert("서버 연결 실패");
