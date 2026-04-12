@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>방탈출 예약</title>
+
+<style>
+body {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.time-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.time-btn {
+  width: 100px;
+  height: 60px;
+  border-radius: 10px;
+  border: none;
+  background: #222;
+  color: white;
+  cursor: pointer;
+}
+
+.time-btn.disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+/* 모달 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+}
+</style>
+
+</head>
+<body>
+
+<h2>날짜 선택</h2>
+<input type="date" id="date">
+
+<h2>시간 선택</h2>
+<div class="time-grid" id="timeGrid"></div>
+
+<!-- 모달 -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3 id="selectedTime"></h3>
+
+    <input id="name" placeholder="대표자 이름"><br><br>
+
+    <select id="people">
+      <option value="">인원 선택</option>
+      <option value="2">2명</option>
+      <option value="3">3명</option>
+      <option value="4">4명</option>
+    </select><br><br>
+
+    <input id="phone" placeholder="전화번호"><br><br>
+
+  <button onclick="submitReservation()">예약</button>    <button onclick="closeModal()">취소</button>
+  </div>
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbyddFR4ZcRiiUTTd-mUlsgMfQs8iU0mNgFY3GyKl8rSNNUiEbeApIDf2YDOyFXsIXcv/exec";
+
+let selectedTime = "";
+
+// 날짜 제한
+const dateInput = document.getElementById("date");
+dateInput.min = "2026-04-27";
+dateInput.max = "2026-04-30";
+
+// 시간 생성
+function generateTimes() {
+  const grid = document.getElementById("timeGrid");
+  grid.innerHTML = "";
+
+  for(let h=10; h<=17; h++){
+    for(let m=0; m<60; m+=30){
+
+      let time;
+
+      if(h === 17 && m === 30){
+        time = "17:30";
+      } else {
+        time = `${pad(h)}:${pad(m)}`;
+      }
+
+      let btn = document.createElement("button");
+      btn.className = "time-btn";
+      btn.innerText = time;
+
+      btn.onclick = () => openModal(time);
+
+      grid.appendChild(btn);
+
+      if(h === 17 && m === 30) return;
+    }
+  }
+}
+
+function pad(n){ return n.toString().padStart(2,'0'); }
+
+// 예약된 시간 불러오기
+async function loadReservations(){
+  const date = dateInput.value;
+  if(!date) return;
+
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+
+    document.querySelectorAll(".time-btn").forEach(btn=>{
+      btn.classList.remove("disabled");
+      btn.onclick = () => openModal(btn.innerText);
+    });
+
+    data.forEach(r=>{
+      if(r[0] === date){
+        document.querySelectorAll(".time-btn").forEach(btn=>{
+          if(btn.innerText === r[1]){
+            btn.classList.add("disabled");
+            btn.onclick = null;
+          }
+        });
+      }
+    });
+
+  } catch(e){
+    alert("예약 데이터 불러오기 실패");
+    console.error(e);
+  }
+}
+
+dateInput.addEventListener("change", loadReservations);
+
+// 모달
+function openModal(time){
+  selectedTime = time;
+  document.getElementById("modal").style.display = "flex";
+  document.getElementById("selectedTime").innerText = time;
+}
+
+function closeModal(){
+  document.getElementById("modal").style.display = "none";
+}
+
+// 예약 제출
+async function submitReservation(){
+
+  const people = parseInt(document.getElementById("people").value);
+
+  if(!people){
+    alert("인원을 선택해주세요");
+    return;
+  }
+
+  if(people < 2 || people > 4){
+    alert("2~4명만 가능합니다");
+    return;
+  }
+
+  const data = {
+    date: dateInput.value,
+    time: selectedTime,
+    name: document.getElementById("name").value,
+    people: people,
+    phone: document.getElementById("phone").value
+  };
+
+  try{
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  });
+
+    const result = await res.json();
+
+    if(result.result === "success"){
+      alert("예약 완료!");
+      closeModal();
+      loadReservations();
+    } else {
+      alert("이미 예약된 시간입니다.");
+    }
+
+  } catch(e){
+    alert("서버 연결 실패");
+    console.error(e);
+  }
+}
+
+generateTimes();
+</script>
+
+</body>
+</html>
