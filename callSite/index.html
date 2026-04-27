@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>전화 키패드</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont;
+  background: #f2f2f2;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: space-between;
+}
+
+/* 상단 번호 표시 */
+.display {
+  text-align: center;
+  margin-top: 60px;
+}
+
+.number {
+  font-size: 36px;
+  letter-spacing: 2px;
+}
+
+.name {
+  margin-top: 10px;
+  color: gray;
+  font-size: 16px;
+}
+
+/* 키패드 */
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  padding: 20px;
+}
+
+.key {
+  width: 80px;
+  height: 80px;
+  background: #ddd;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  margin: auto;
+}
+
+.sub {
+  font-size: 10px;
+}
+
+/* 하단 버튼 */
+.bottom {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.call {
+  width: 70px;
+  height: 70px;
+  background: #34c759;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 28px;
+}
+
+.delete {
+  margin-left: 20px;
+  font-size: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- 번호 표시 -->
+  <div class="display">
+    <div class="number" id="number"> </div>
+    <div class="name" id="name"></div>
+  </div>
+
+  <!-- 키패드 -->
+  <div class="keypad">
+    <div class="key" onclick="press('1')">1</div>
+    <div class="key" onclick="press('2')">2<div class="sub">ABC</div></div>
+    <div class="key" onclick="press('3')">3<div class="sub">DEF</div></div>
+
+    <div class="key" onclick="press('4')">4<div class="sub">GHI</div></div>
+    <div class="key" onclick="press('5')">5<div class="sub">JKL</div></div>
+    <div class="key" onclick="press('6')">6<div class="sub">MNO</div></div>
+
+    <div class="key" onclick="press('7')">7<div class="sub">PQRS</div></div>
+    <div class="key" onclick="press('8')">8<div class="sub">TUV</div></div>
+    <div class="key" onclick="press('9')">9<div class="sub">WXYZ</div></div>
+
+    <div class="key" onclick="press('*')">*</div>
+    <div class="key" onclick="press('0')">0<div class="sub">+</div></div>
+    <div class="key" onclick="press('#')">#</div>
+  </div>
+
+  <!-- 하단 -->
+  <div class="bottom">
+    <span class="call" onclick="call()">📞</span>
+    <span class="delete" onclick="del()">⌫</span>
+  </div>
+
+</div>
+
+<script>
+let input = "";
+
+// 📒 가짜 연락처
+const contacts = {
+  "01099999999": "진고해 교수님",
+//   "112": "경찰",
+//   "119": "소방서",
+//   "01099998888": "범인"
+};
+
+function format(num) {
+  if (num.length < 4) return num;
+  if (num.length < 8) return num.slice(0,3) + "-" + num.slice(3);
+  return num.slice(0,3) + "-" + num.slice(3,7) + "-" + num.slice(7);
+}
+
+function press(n) {
+  if (input.length >= 11) return;
+  input += n;
+
+  document.getElementById("number").innerText = format(input);
+
+  if (contacts[input]) {
+    document.getElementById("name").innerText = contacts[input];
+  } else {
+    document.getElementById("name").innerText = "";
+  }
+}
+
+function del() {
+  input = input.slice(0, -1);
+  document.getElementById("number").innerText = format(input);
+  document.getElementById("name").innerText = contacts[input] || "";
+}
+
+function call() {
+  if (input) {
+
+    // 🔥 여기 추가
+    if (input === "01099999999") {
+      const audio = new Audio("testAudio.m4a");
+      audio.play();
+    }
+
+    location.href = "index_2.html?num=" + input;
+  }
+}
+</script>
+
+</body>
+</html>
