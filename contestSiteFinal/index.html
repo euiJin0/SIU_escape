@@ -990,11 +990,11 @@ action="https://docs.google.com/forms/d/e/1FAIpQLSdLoTBtN0Aku4U2G90ne1X11oj3ufbH
   });
 
   // ⏱ 타이머
-let time = 33 * 60;
+let time = 1 * 60; // <------ 시간 수정 
 const timerEl = document.getElementById("globalTimer");
 
-setInterval(() => {
-  time--;
+const timer = setInterval(() => {
+    time--;
 
   let min = String(Math.floor(time / 60)).padStart(2, "0");
   let sec = String(time % 60).padStart(2, "0");
@@ -1002,8 +1002,9 @@ setInterval(() => {
   timerEl.innerText = `⏱ 제출 마감: ${min}:${sec}`;
 
   if (time <= 0) {
+    clearInterval(timer);
     alert("⏰ 시간이 종료되었습니다.");
-    window.location.href = "index.html";
+    window.location.href = "https://euijin0.github.io/SIU_escape/contestSiteFinal/failImage.jpg";
   }
 
   if (time < 60) timerEl.style.color = "red";
