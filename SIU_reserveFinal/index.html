@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>방탈출 예약 시스템</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; background-color: #f4f7f6; }
+        .container { max-width: 500px; margin: auto; border: 1px solid #ccc; padding: 25px; border-radius: 12px; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px; }
+        
+        .time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .time-btn { padding: 12px; border: 1px solid #ddd; background: #fff; cursor: pointer; text-align: center; border-radius: 5px; transition: 0.3s; }
+        .time-btn.selected { background: #007bff; color: white; border-color: #007bff; }
+        .time-btn:disabled { background: #eee !important; color: #bbb !important; cursor: not-allowed; text-decoration: line-through; }
+
+        .submit-btn { width: 100%; padding: 15px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 18px; margin-top: 20px; font-weight: bold; }
+        .loading-text { text-align: center; color: #007bff; font-weight: bold; margin: 10px 0; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🔒 방탈출 실시간 예약</h2>
+    
+    <div class="form-group">
+        <label>날짜 선택 (5/4 ~ 5/7)
+        <span style="color:red; font-size:13px;"> *5/5 제외 </span>
+        </label>
+        <input type="date" id="res-date" min="2026-05-04" max="2026-05-07">
+    </div>
+
+    <div class="form-group">
+        <label>시간 선택 (10:00 ~ 17:00)</label>
+        <div id="loading-msg" class="loading-text hidden">예약 현황 확인 중...</div>
+        <div id="time-slots" class="time-grid"></div>
+    </div>
+
+    <div class="form-group">
+        <label>학과</label>
+        <input type="text" id="res-major" placeholder="예약자의 학과를 적어주세요 ex.202500000">
+    </div>
+
+    <div class="form-group">
+        <label>학번</label>
+        <input type="text" id="res-studentId" placeholder="예약자의 학번을 적어주세요">
+    </div>
+
+    <div class="form-group">
+        <label>예약자</label>
+        <input type="text" id="res-name" placeholder="성함을 입력하세요">
+    </div>
+
+    <div class="form-group">
+        <label>인원 수</label>
+        <select id="res-count">
+            <option value="2">2명</option>
+            <option value="3">3명</option>
+            <option value="4">4명</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>전화번호</label>
+        <input type="tel" id="res-phone" placeholder="010-0000-0000">
+    </div>
+
+     <!-- 📜 개인정보 & 안내 -->
+<div style="margin-top:30px; font-size:14px; line-height:1.6; color:#333;">
+  <h3> [안내사항]</h3>
+  <p>*본 프로그램은 참여자 간 협력을 기반으로 진행되는 테마이기에, <br>
+        <strong>2인 예약의 경우 다른 2인 예약자와 함께 팀으로 구성되어 운영될 수 있습니다. </strong>
+    <br>*3~4인 예약 시에는 예약주신 인원끼리 단독으로 진행됩니다.
+ </p>
+
+ <p>
+    <strong>반드시 정확한 인원에 맞게 예약 부탁드립니다.</strong></p>
+
+  <hr style="margin:20px 0;">
+
+
+  <h3>[개인정보 수집·이용 동의]</h3>
+  <p>
+    <!-- <strong>수집하는 개인정보 항목</strong><br> -->
+    수집항목 : 이름, 전화번호, 학과, 학번<br>
+    수집목적: 예약 확인 및 안내, 참여자 식별, 공지사항 전달<br>
+    보유기간 : 프로그램 종료 후 즉시 파기
+  </p>
+
+
+<div style="display:flex; align-items:center; gap:16px; margin-top:10px; white-space: nowrap; overflow: hidden;">
+  <span>위 내용에 동의하십니까?</span>
+
+  <div style="display:flex; gap:10px;">
+    <label style="display:flex; align-items:center; gap:4px; font-size:13px;">
+      <input type="radio" name="privacy" value="yes"> 동의함
+    </label>
+
+    <label style="display:flex; align-items:center; gap:4px; font-size:13px;">
+      <input type="radio" name="privacy" value="no"> 동의안함
+    </label>
+  </div>
+</div>
+  <p style="color:red; font-size:13px;">
+  * 동의하지 않을 경우 예약이 불가능합니다.
+  </p>
+
+  <hr style="margin:20px 0;">
+
+  <h3>[보증금 안내]</h3>
+  <p>
+    본 행사는 한정된 인원으로 운영되어, 보다 많은 분들께 참여 기회를 드리고 
+    <br>원활한 진행을 위해 보증금 제도를 운영하고 있습니다.
+  </p>
+
+  <p>
+    <strong>보증금은 1인당 1,000원이며, 예약 인원 수에 맞게 입금해 주시면 됩니다. </strong>
+    <br>(ex. 4명 예약시 4000원)
+  </p>
+
+  <p>
+    예약 시간 10분 전까지 도착 시 전액 환급됩니다. 
+  </p>
+
+  <p><strong>
+    입금 계좌 : 카카오뱅크 7942-30-24433 (이현주)</strong>
+    <br>* 입금 시 반드시 <strong>'예약자 성함+전화번호 뒷자리'로 입금 </strong>부탁드립니다. 
+    <br>  (ex. 홍길동9999)
+    <br>* 예약 후 2시간 이내 미입금 시 자동 취소됩니다.
+    <br>* 입금 확인 후 예약 확정 문자를 보내드리니 꼭 확인해주시기 바랍니다. 
+
+</div>
+<div style="display:flex; align-items:center; gap:16px; margin-top:10px; margin-top:10px; white-space: nowrap; overflow: hidden;">
+  <span>위 내용을 확인하셨습니까?</span>
+
+  <div style="display:flex; gap:10px;">
+    <label style="display:flex; align-items:center; gap:4px; font-size:13px;">
+      <input type="radio" name="deposit" value="yes"> 예
+    </label>
+
+    <label style="display:flex; align-items:center; gap:4px; font-size:13px;">
+      <input type="radio" name="deposit" value="no"> 아니오
+    </label>
+  </div>
+</div>
+  <p style="color:red; font-size:13px;">
+    * 미숙지로 인한 불이익은 책임지지 않습니다.
+  </p>
+
+    <button class="submit-btn" id="confirm-btn" onclick="makeReservation()">예약 확정하기</button>
+
+</div>
+
+<script>
+// ⭐ 본인의 Apps Script 웹 앱 URL을 반드시 여기에 붙여넣으세요!
+const API_URL = "https://script.google.com/macros/s/AKfycbwrTvqy_H6cWXhyWyx2eDGfmlB_5HQlKDAAZBdvCF7HhVGEeqC6UIRKQVmZ-p-XfW9P/exec";
+
+const timeSlotsContainer = document.getElementById('time-slots');
+const loader = document.getElementById('loading-msg');
+let selectedTime = null;
+let reservations = [];
+
+// 날짜 변경 시 예약 현황 다시 로드
+document.getElementById('res-date').addEventListener('change', () => {
+    const date = document.getElementById('res-date').value;
+    if (date === "2026-05-05") {
+        alert("❌ 5월 5일은 예약이 불가합니다.");
+        document.getElementById('res-date').value = "";
+        timeSlotsContainer.innerHTML = "";
+        return;
+    }
+    loadReservations();
+});
+
+// 구글 시트에서 데이터 가져오기
+// (기존 HTML 구조 유지, 스크립트의 핵심 부분만 수정)
+
+async function loadReservations() {
+    loader.classList.remove('hidden');
+    timeSlotsContainer.innerHTML = '';
+    try {
+        // 1. 구글 시트에서 현재 예약된 모든 행(Row) 데이터를 가져옵니다.
+        const res = await fetch(API_URL);
+        const data = await res.json();
+
+        // if(result.result === "full"){
+        //     alert("이미 마감된 시간입니다.");
+        //     return;
+        // }
+        
+        // 2. 다른 사람들의 예약 내역을 포함하여 전체 목록을 저장합니다.
+        reservations = data.map(row => ({
+            date: String(row[0]).trim(), // 시트의 A열 (날짜)
+            time: String(row[1]).trim(),  // 시트의 B열 (시간)
+            people: Number(row[5])
+        }));
+        
+        generateTimeSlots(); // 목록을 다 읽은 후 버튼을 만듭니다.
+    } catch (e) {
+        console.error("데이터 로드 실패:", e);
+        generateTimeSlots(); 
+    } finally {
+        loader.classList.add('hidden');
+    }
+}
+
+function generateTimeSlots() {
+    timeSlotsContainer.innerHTML = '';
+    const dateValue = document.getElementById('res-date').value;
+
+    const startHour = 10;
+    const endHour = 17;
+
+    for (let h = startHour; h <= endHour; h++) {
+        let timeStr = `${h.toString().padStart(2, '0')}:00`;
+
+        const btn = document.createElement('button');
+        btn.className = 'time-btn';
+        // btn.innerText = timeStr;
+
+        // 🔥 현재 시간 총 인원 계산
+        let totalPeople = reservations
+            .filter(r => r.date === dateValue && r.time === timeStr)
+            .reduce((sum, r) => sum + Number(r.people), 0);
+
+        // 🔥 상태 표시
+        if (totalPeople >= 3) {
+            btn.disabled = true;
+            btn.innerText = "예약마감";
+            btn.style.backgroundColor = "#eee";
+        } else {
+            btn.innerText = `${timeStr} (${4 - totalPeople}자리 남음)`;
+
+            btn.onclick = () => {
+                document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedTime = timeStr;
+            };
+        }
+
+        timeSlotsContainer.appendChild(btn);
+    }
+}
+
+async function makeReservation() {
+    const date = document.getElementById('res-date').value;
+    const major = document.getElementById('res-major').value;
+    const studentId = document.getElementById('res-studentId').value;
+    const name = document.getElementById('res-name').value;
+    const phone = document.getElementById('res-phone').value;
+    const count = document.getElementById('res-count').value;
+    const btn = document.getElementById('confirm-btn');
+
+    if (!date || !selectedTime || !name || !phone || !major || !studentId) {
+        alert("모든 정보를 입력하고 시간을 선택해주세요.");
+        return;
+    }
+
+    const agreePrivacy = document.querySelector('input[name="privacy"]:checked');
+    const agreeDeposit = document.querySelector('input[name="deposit"]:checked');
+
+    if (!agreePrivacy || agreePrivacy.value !== "yes") {
+        alert("개인정보취급방침에 동의해주세요.");
+        return;
+    }
+
+    if (!agreeDeposit || agreeDeposit.value !== "yes") {
+        alert("보증금 안내 내용을 확인해주세요.");
+        return;
+    }
+
+    let currentTotal = reservations
+        .filter(r => r.date === date && r.time === selectedTime)
+        .reduce((sum, r) => sum + Number(r.people), 0);
+
+    const countNum = Number(count);
+
+    if (currentTotal + countNum > 4) {
+        alert("남은 자리를 초과했습니다.");
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerText = "예약 중...";
+
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify({
+                date,
+                time: selectedTime,
+                major,
+                studentId,
+                name,
+                people: count,
+                phone
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.result === "full") {
+            alert("이미 마감된 시간입니다.");
+            loadReservations();
+            return;
+        }
+
+        if (result.result === "overflow") {
+            alert("남은 자리를 초과했습니다.");
+            loadReservations();
+            return;
+        }
+
+        alert("예약이 완료되었습니다!");
+        selectedTime = null;
+
+        document.getElementById('res-name').value = "";
+        document.getElementById('res-phone').value = "";
+        document.getElementById('res-major').value = "";
+        document.getElementById('res-studentId').value = "";
+
+        loadReservations();
+
+    } catch (e) {
+        alert("서버 통신 오류");
+        console.error(e);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "예약 확정하기";
+    }
+}
+
+// 초기 로드
+window.onload = () => {
+    document.getElementById('res-date').value = "2026-05-04";
+    loadReservations();
+};
+</script>
+
+</body>
+</html>
