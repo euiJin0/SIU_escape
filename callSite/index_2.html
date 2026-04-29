@@ -89,19 +89,12 @@ body {
 </div>
 
 <!-- // 진고해-시그널 오디오 (소리만 재생) -->
-<audio id="audio" src="callAudio.m4a"></audio>
+<audio id="audio" src="callAudio1.m4a"></audio>
 
 <script>
 // 번호 가져오기
 const params = new URLSearchParams(location.search);
 const number = params.get("num");
-
-// // 🎧 특정 번호면 자동 타이머-> 다음 사이트로
-// if (number === "01012340000") {
-//   setTimeout(() => {
-//     goNextPage();
-//   }, 30000); // 3초 후 종료
-// }
 
 // 📒 동일한 연락처
 const contacts = {
