@@ -88,7 +88,7 @@ body {
   </div>
 </div>
 
-<!-- // 고모 오디오 (소리만 재생) -->
+<!-- // 진고해 교수님 오디오 (소리만 재생) -->
 <audio id="audio" src="testAudio.m4a"></audio>
 
 <script>
@@ -97,7 +97,7 @@ const params = new URLSearchParams(location.search);
 const number = params.get("num");
 
 // 🎧 특정 번호면 자동 종료 타이머
-if (number === "01099999999") {
+if (number === "01012340000") {
   setTimeout(() => {
     endCall();
   }, 20000); // 2초 후 종료
@@ -105,7 +105,7 @@ if (number === "01099999999") {
 
 // 📒 동일한 연락처
 const contacts = {
-  "01099999999": "진고해 교수님"
+  "01012340000": "진고해 교수님"
 };
 
 // 이름 표시
@@ -127,7 +127,7 @@ setInterval(() => {
 
 // 🎧 특정 번호일 때만 소리 재생
 window.onload = () => {
-  if (number === "01099999999") {
+  if (number === "01012340000") {
     const audio = document.getElementById("audio");
 
     audio.play().catch(() => {
