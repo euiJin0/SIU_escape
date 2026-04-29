@@ -129,10 +129,7 @@ let input = "";
 
 // 📒 가짜 연락처
 const contacts = {
-  "01099999999": "진고해 교수님",
-//   "112": "경찰",
-//   "119": "소방서",
-//   "01099998888": "범인"
+  "01012340000": "진고해 교수님",
 };
 
 function format(num) {
@@ -164,7 +161,7 @@ function call() {
   if (input) {
 
     // 🔥 여기 추가
-    if (input === "01099999999") {
+    if (input === "01012340000") {
       const audio = new Audio("testAudio.m4a");
       audio.play();
     }
