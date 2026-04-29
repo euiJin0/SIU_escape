@@ -96,12 +96,12 @@ body {
 const params = new URLSearchParams(location.search);
 const number = params.get("num");
 
-// 🎧 특정 번호면 자동 타이머-> 다음 사이트로
-if (number === "01012340000") {
-  setTimeout(() => {
-    goNextPage();
-  }, 30000); // 3초 후 종료
-}
+// // 🎧 특정 번호면 자동 타이머-> 다음 사이트로
+// if (number === "01012340000") {
+//   setTimeout(() => {
+//     goNextPage();
+//   }, 30000); // 3초 후 종료
+// }
 
 // 📒 동일한 연락처
 const contacts = {
@@ -137,7 +137,7 @@ window.onload = () => {
     audio.onended = () => {
       setTimeout(() => {
         goNextPage();
-      }, 2000);
+      }, 3000);
     };
   }
 };
