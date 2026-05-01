@@ -231,15 +231,11 @@ function generateTimeSlots() {
 
         let remain = 4 - totalPeople;
 
-        if (totalPeople >= 4) {
+        // 🔥 1자리 남아도 막아버림
+        if (totalPeople >= 4 || remain === 1) {
             btn.disabled = true;
             btn.innerHTML = `<strong>${timeStr}</strong><br>예약마감`;
-        } else if (remain === 1) {
-            // 🔥 1자리 남으면 예약 불가
-            btn.disabled = true;
-            btn.innerHTML = `<strong>${timeStr}</strong><br><span style="color:red;">예약불가</span>`;
         } else {
-            // 🔥 기본 표시
             let color = "";
 
             if (remain === 4) color = "green";
