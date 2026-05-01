@@ -253,7 +253,7 @@ async function makeReservation() {
     const agreeDeposit = document.querySelector('input[name="deposit"]:checked');
 
     if (!agreePrivacy || agreePrivacy.value !== "yes") {
-        alert("개인정보취급방침에 동의해주세요.");
+        alert("개인정보 수집·이용에 동의해주세요.");
         return;
     }
 
