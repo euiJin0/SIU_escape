@@ -18,7 +18,7 @@
   }
 
   .container {
-    width: 320px;
+    width: 360px;
     padding: 30px;
     border-radius: 20px;
     background: rgba(15, 23, 42, 0.6);
@@ -47,39 +47,31 @@
   }
 
   .display {
-    height: 50px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
     margin-bottom: 25px;
-    border-radius: 10px;
-    background: rgba(0,0,0,0.6);
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 0 15px;
-    font-size: 26px;
-    letter-spacing: 8px;
-    color: #00f0ff;
-    box-shadow: inset 0 0 10px rgba(0,255,255,0.3);
+    width: 100%;
+  }
+
+  .word-input {
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .buttons {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    display: flex;
+    gap: 10px;
   }
 
   button {
-    height: 65px;
-    font-size: 20px;
+    flex: 1;
+    height: 50px;
     border: none;
     border-radius: 12px;
     background: rgba(0, 255, 255, 0.08);
     color: #00f0ff;
     cursor: pointer;
-    transition: 0.2s;
-  }
-
-  button:hover {
-    background: rgba(0, 255, 255, 0.2);
   }
 
   .clear {
@@ -95,50 +87,56 @@
   <div class="title">SECURE ACCESS TERMINAL</div>
   <div class="status" id="status"></div>
 
-  <div class="display" id="display"></div>
+  <div class="display">
+    <input class="word-input" placeholder="WORD 1">
+    <input class="word-input" placeholder="WORD 2">
+    <input class="word-input" placeholder="WORD 3">
+    <input class="word-input" placeholder="WORD 4">
+  </div>
 
   <div class="buttons">
-    <button onclick="press(1)">1</button>
-    <button onclick="press(2)">2</button>
-    <button onclick="press(3)">3</button>
-    <button onclick="press(4)">4</button>
-    <button onclick="press(5)">5</button>
-    <button onclick="press(6)">6</button>
-    <button onclick="press(7)">7</button>
-    <button onclick="press(8)">8</button>
-    <button onclick="press(9)">9</button>
-    <button class="clear" onclick="clearDisplay()">CLR</button>
-    <button onclick="press(0)">0</button>
+    <button class="clear" onclick="clearAll()">CLR</button>
     <button onclick="check()">ENTER</button>
   </div>
 </div>
 
 <script>
-let input = "";
-const answer = "0612";
+const answer = ["헬스케어", "금융", "여가", "주거"]; // 정답 (소문자 기준)
 const nextURL = "https://euijin0.github.io/SIU_escape/lastFile.mp4";
 
-function press(num) {
-  if (input.length < 4) {
-    input += num;
-    updateDisplay();
-  }
+const inputs = document.querySelectorAll(".word-input");
+
+// 자동 이동 (엔터 or 스페이스)
+inputs.forEach((input, index) => {
+  input.addEventListener("keydown", (e) => {
+    if ((e.key === "Enter" || e.key === " ") && index < inputs.length - 1) {
+      e.preventDefault();
+      inputs[index + 1].focus();
+    }
+
+    if (e.key === "Backspace" && !input.value && index > 0) {
+      inputs[index - 1].focus();
+    }
+  });
+});
+
+function getWords() {
+  return Array.from(inputs).map(i => i.value.trim().toLowerCase());
 }
 
-function updateDisplay() {
-  document.getElementById("display").textContent = "●".repeat(input.length);
-}
-
-function clearDisplay() {
-  input = "";
-  updateDisplay();
+function clearAll() {
+  inputs.forEach(i => i.value = "");
+  inputs[0].focus();
 }
 
 function check() {
   const container = document.getElementById("container");
   const status = document.getElementById("status");
+  const words = getWords();
 
-  if (input === answer) {
+  const isCorrect = words.every((word, i) => word === answer[i]);
+
+  if (isCorrect) {
     container.classList.add("success");
     status.textContent = "🟢 ACCESS GRANTED";
 
@@ -147,10 +145,8 @@ function check() {
     }, 900);
 
   } else {
-    // 🔴 실패 연출
     status.textContent = "🔴 ACCESS DENIED";
 
-    // 살짝 흔들림 효과
     container.style.transform = "translateX(-5px)";
     setTimeout(() => container.style.transform = "translateX(5px)", 50);
     setTimeout(() => container.style.transform = "translateX(0)", 100);
@@ -159,7 +155,7 @@ function check() {
       status.textContent = "";
     }, 1200);
 
-    clearDisplay();
+    clearAll();
   }
 }
 </script>
