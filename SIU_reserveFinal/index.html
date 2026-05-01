@@ -229,23 +229,26 @@ function generateTimeSlots() {
             .filter(r => r.date === dateValue && r.time === timeStr)
             .reduce((sum, r) => sum + Number(r.people), 0);
 
-        // 👇 여기 추가
         let remain = 4 - totalPeople;
 
         if (totalPeople >= 4) {
             btn.disabled = true;
-            btn.innerHTML = "예약마감";
+            btn.innerHTML = `<strong>${timeStr}</strong><br>예약마감`;
+        } else if (remain === 1) {
+            // 🔥 1자리 남으면 예약 불가
+            btn.disabled = true;
+            btn.innerHTML = `<strong>${timeStr}</strong><br><span style="color:red;">예약불가</span>`;
         } else {
-            btn.innerHTML = `${timeStr}<br>(${remain}자리 남음)`;
+            // 🔥 기본 표시
+            let color = "";
 
-            // 색 초기화
-            btn.style.color = "";
+            if (remain === 4) color = "green";
+            else if (remain === 2) color = "red";
 
-            if (remain === 4) {
-                btn.style.color = "green";
-            } else if (remain === 2) {
-                btn.style.color = "red";
-            }
+            btn.innerHTML = `
+                <strong style="color:black;">${timeStr}</strong><br>
+                <span style="color:${color};">(${remain}자리 남음)</span>
+    `;
 
             btn.onclick = () => {
                 document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
