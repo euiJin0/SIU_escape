@@ -150,14 +150,14 @@ function del() {
 function circleBtn(icon) {
   return `
     <div style="
-      width:90px;
-      height:90px;
+      width:70px;
+      height:70px;
       background:#1e3a52;
       border-radius:50%;
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:28px;
+      font-size:22px;
       margin:auto;
     ">
       ${icon}
@@ -188,17 +188,17 @@ function showCallScreen() {
   document.body.innerHTML = `
   <div style="background:#0b1c2c; color:white; height:100vh; text-align:center; font-family:-apple-system;">
     
-    <div style="padding-top:100px;">
-      <div id="callName" style="font-size:36px; font-weight:500;">연결중...</div>
-      <div style="color:gray; margin-top:10px;">통화중</div>
-      <div id="callTime" style="margin-top:10px; font-size:20px;">00:00</div>
+    <div style="padding-top:80px;">
+      <div id="callName" style="font-size:30px; font-weight:500;">연결중...</div>
+      <div style="color:gray; margin-top:8px;">통화중</div>
+      <div id="callTime" style="margin-top:8px; font-size:18px;">00:00</div>
     </div>
 
     <div style="
       display:grid;
       grid-template-columns: repeat(3, 1fr);
-      gap:30px;
-      margin:80px 40px;
+      gap:20px;
+      margin:60px 40px;
     ">
       
       ${circleBtn("🔇")}
@@ -210,16 +210,16 @@ function showCallScreen() {
 
     </div>
 
-    <div style="margin-top:40px;">
+    <div style="margin-top:20px;">
       <div onclick="endCall()" style="
-        width:100px;
-        height:100px;
+        width:80px;
+        height:80px;
         background:red;
         border-radius:50%;
         display:flex;
         align-items:center;
         justify-content:center;
-        font-size:40px;
+        font-size:32px;
         margin:auto;
       ">
         📞
