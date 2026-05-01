@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>전화 키패드</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont;
+  background: #f2f2f2;
+}
+
+/* 전체 레이아웃 */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: flex-start; /* 🔥 이걸로 변경 */
+}
+
+/* 상단 번호 */
+.display {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.number {
+  font-size: 32px;
+  letter-spacing: 2px;
+}
+
+.name {
+  margin-top: 8px;
+  color: gray;
+  font-size: 14px;
+}
+
+/* 키패드 */
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  padding: 30px 40px 0;
+  margin-top: 80px;
+}
+
+.key {
+  width: 75px;
+  height: 75px;
+  background: #dcdcdc;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  font-size: 26px;
+}
+
+.sub {
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+/* 하단 */
+.bottom {
+  position: fixed;
+  bottom: 5vh; /* 🔥 핵심 */
+  left: 50%;
+  transform: translateX(-50%);
+  text-align : center;
+  gap: 20px;
+}
+
+.call {
+  width: 70px;
+  height: 70px;
+  background: #34c759;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  color: white;
+}
+
+.delete {
+  font-size: 22px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="display">
+    <div class="number" id="number"></div>
+    <div class="name" id="name"></div>
+  </div>
+
+  <div class="keypad">
+    <div class="key" onclick="press('1')">1</div>
+    <div class="key" onclick="press('2')">2<div class="sub">ABC</div></div>
+    <div class="key" onclick="press('3')">3<div class="sub">DEF</div></div>
+
+    <div class="key" onclick="press('4')">4<div class="sub">GHI</div></div>
+    <div class="key" onclick="press('5')">5<div class="sub">JKL</div></div>
+    <div class="key" onclick="press('6')">6<div class="sub">MNO</div></div>
+
+    <div class="key" onclick="press('7')">7<div class="sub">PQRS</div></div>
+    <div class="key" onclick="press('8')">8<div class="sub">TUV</div></div>
+    <div class="key" onclick="press('9')">9<div class="sub">WXYZ</div></div>
+
+    <div class="key" onclick="press('*')">*</div>
+    <div class="key" onclick="press('0')">0<div class="sub">+</div></div>
+    <div class="key" onclick="press('#')">#</div>
+  </div>
+
+  <div class="bottom">
+    <span class="call" onclick="call()">📞</span>
+    <span class="delete" onclick="del()">⌫</span>
+  </div>
+
+</div>
+
+<script>
+let input = "";
+let callAudio;
+
+// 연락처
+const contacts = {
+  "01012340000": "진고해 교수님"
+};
+
+function format(num) {
+  if (num.length < 4) return num;
+  if (num.length < 8) return num.slice(0,3) + "-" + num.slice(3);
+  return num.slice(0,3) + "-" + num.slice(3,7) + "-" + num.slice(7);
+}
+
+function press(n) {
+  if (input.length >= 11) return;
+  input += n;
+
+  document.getElementById("number").innerText = format(input);
+  document.getElementById("name").innerText = contacts[input] || "";
+}
+
+function del() {
+  input = input.slice(0, -1);
+  document.getElementById("number").innerText = format(input);
+  document.getElementById("name").innerText = contacts[input] || "";
+}
+
+function circleBtn(icon) {
+  return `
+    <div style="
+      width:70px;
+      height:70px;
+      background:#1e3a52;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:22px;
+      margin:auto;
+    ">
+      ${icon}
+    </div>
+  `;
+}
+
+// 🔥 여기 핵심
+function call() {
+  if (!input) return;
+
+  if (input === "01012340000") {
+    callAudio = new Audio("(Audio)call.m4a");
+
+    callAudio.play().then(() => {
+      showCallScreen();
+    }).catch(() => {
+      showCallScreen();
+    });
+
+  } else {
+    showCallScreen();
+  }
+}
+
+// 🔥 통화 화면으로 전환
+function showCallScreen() {
+  document.body.innerHTML = `
+  <div style="background:#0b1c2c; color:white; height:100vh; text-align:center; font-family:-apple-system;">
+    
+    <div style="padding-top:80px;">
+      <div id="callName" style="font-size:30px; font-weight:500;">연결중...</div>
+      <div style="color:gray; margin-top:8px;">통화중</div>
+      <div id="callTime" style="margin-top:8px; font-size:18px;">00:00</div>
+    </div>
+
+    <div style="
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:20px;
+      margin:60px 40px;
+    ">
+      
+      ${circleBtn("🔇")}
+      ${circleBtn("🔢")}
+      ${circleBtn("🔊")}
+      ${circleBtn("➕")}
+      ${circleBtn("🎥")}
+      ${circleBtn("👤")}
+
+    </div>
+
+    <div style="margin-top:20px;">
+      <div onclick="endCall()" style="
+        width:80px;
+        height:80px;
+        background:red;
+        border-radius:50%;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:32px;
+        margin:auto;
+      ">
+        📞
+      </div>
+    </div>
+
+  </div>
+  `;
+
+  startCall();
+}
+
+// 🔥 통화 시작 로직
+function startCall() {
+  const name = contacts[input] || input;
+  document.getElementById("callName").innerText = name;
+
+  let sec = 0;
+
+  setInterval(() => {
+    sec++;
+    let min = String(Math.floor(sec / 60)).padStart(2, "0");
+    let s = String(sec % 60).padStart(2, "0");
+    document.getElementById("callTime").innerText = `${min}:${s}`;
+  }, 1000);
+
+  // 🔥 오디오 끝나면 다음 화면
+  if (callAudio) {
+    callAudio.onended = () => {
+      setTimeout(() => {
+        window.location.href = "https://euijin0.github.io/SIU_escape/callSite/callImage.jpg";
+      }, 2000);
+    };
+  }
+}
+
+// 종료
+function endCall() {
+  location.reload();
+}
+</script>
+</script>
+
+</body>
+</html>
