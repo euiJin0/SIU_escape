@@ -805,20 +805,26 @@ action="https://docs.google.com/forms/d/e/1FAIpQLSdLoTBtN0Aku4U2G90ne1X11oj3ufbH
       <!-- <p style="font-size:0.82rem; color:var(--muted); margin-bottom:24px;">네 문제를 모두 맞히면 제출이 완료됩니다.</p> -->
       <div style="height:1px; background:var(--rule); margin-bottom:24px;"></div>
 
-      <!-- Q1 -->
-      <!-- <div style="margin-bottom:20px;">
-        <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--ink); margin-bottom:8px; line-height:1.7;">
-          1. 시니어의 나이대는 <span style="border-bottom:2px solid var(--gold); padding:0 4px;">__</span> ~ <span style="border-bottom:2px solid var(--gold); padding:0 4px;">__</span> 대 이다.
-        </label>
-        <div style="display:flex; gap:10px; align-items:center;">
-          <input id="q1a" type="text" placeholder="시작 나이대" oninput="clearError()" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--rule)'" style="flex:1; padding:11px 13px; border:1.5px solid var(--rule); background:var(--white); font-family:'Noto Sans KR',sans-serif; font-size:0.88rem; color:var(--ink); outline:none; transition:border-color 0.2s;">
-          <span style="color:var(--muted); font-weight:700;">~</span>
-
-
-      <!-- Q4 -->
+      <!--1번-->
       <div style="margin-bottom:24px;">
         <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--ink); margin-bottom:8px; line-height:1.7;">
-          4. 2050년 초고령사회의 위기를 막기 위해, 지금 우리에게 필요한 것은 시니어 산업과 모든 산업을 <span style="border-bottom:2px solid var(--gold); padding:0 4px;">____</span> 하는 것이다.
+          1. 시니어 산업은 단순한 복지 대상이 아니라, 능동적인 <span style="border-bottom:2px solid var(--gold); padding:0 4px;">____</span>로 바라봐야 한다.
+        </label>
+        <input id="q2" type="text" placeholder="정답을 입력하세요" oninput="clearError()" style="width:100%; padding:11px 13px; border:1.5px solid var(--rule);">
+      </div>    
+
+      <div style="margin-bottom:24px;">
+        <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--ink); margin-bottom:8px; line-height:1.7;">
+          2. 시니어 산업은 고령층뿐 아니라, 미래 수요를 고려해 <span style="border-bottom:2px solid var(--gold); padding:0 4px;">________</span>까지 포함해 설계해야 한다.
+        </label>
+        <input id="q3" type="text" placeholder="정답을 입력하세요" oninput="clearError()" style="width:100%; padding:11px 13px; border:1.5px solid var(--rule);">
+      </div>
+
+
+      <!-- Q3 -->
+      <div style="margin-bottom:24px;">
+        <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--ink); margin-bottom:8px; line-height:1.7;">
+          3. 2050년 초고령사회의 위기를 막기 위해, 지금 우리에게 필요한 것은 시니어 산업과 모든 산업을 <span style="border-bottom:2px solid var(--gold); padding:0 4px;">____</span> 하는 것이다.
         </label>
         <input id="q4" type="text" placeholder="정답을 입력하세요" oninput="clearError()" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--rule)'" style="width:100%; padding:11px 13px; border:1.5px solid var(--rule); background:var(--white); font-family:'Noto Sans KR',sans-serif; font-size:0.88rem; color:var(--ink); outline:none; transition:border-color 0.2s;">
       </div>
@@ -828,7 +834,7 @@ action="https://docs.google.com/forms/d/e/1FAIpQLSdLoTBtN0Aku4U2G90ne1X11oj3ufbH
       </div>
 
       <button onclick="checkAnswers()" onmouseover="this.style.background='var(--rust)'" onmouseout="this.style.background='var(--ink)'" style="width:100%; padding:15px; background:var(--ink); color:var(--paper); border:none; cursor:pointer; font-family:'Noto Sans KR',sans-serif; font-size:0.88rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; transition:background 0.2s;">
-        확인
+        다음
       </button>
     </div>
 
@@ -918,12 +924,16 @@ action="https://docs.google.com/forms/d/e/1FAIpQLSdLoTBtN0Aku4U2G90ne1X11oj3ufbH
     return str.trim().replace(/\s+/g, '').toLowerCase();
   }
 
-  function checkAnswers() {
-  const a4 = normalize(document.getElementById('q4').value);
+function checkAnswers() {
+  const a1 = normalize(document.getElementById('q2').value);
+  const a2 = normalize(document.getElementById('q3').value);
+  const a3 = normalize(document.getElementById('q4').value);
 
-  const ok4 = ['융합'].includes(a4);
+  const ok1 = ['소비자'].includes(a1);
+  const ok2 = ['중장년층'].includes(a2);
+  const ok3 = ['융합'].includes(a3);
 
-  if (ok4) {
+  if (ok1 && ok2 && ok3) {
     document.getElementById('quizScreen').style.display = 'none';
     document.getElementById('opinionScreen').style.display = 'block';
   } else {
