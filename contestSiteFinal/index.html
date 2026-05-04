@@ -895,15 +895,18 @@ action="https://docs.google.com/forms/d/e/1FAIpQLSdLoTBtN0Aku4U2G90ne1X11oj3ufbH
 </div>
 
 <script>
-  function openQuiz() {
-    document.getElementById('quizOverlay').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-  }
+function openQuiz() {
+  document.getElementById('quizOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+
+  document.getElementById('passwordScreen').style.display = 'block';
+  document.getElementById('quizScreen').style.display = 'none';
+}
 
   function closeQuiz() {
     document.getElementById('quizOverlay').style.display = 'none';
     document.body.style.overflow = '';
-    ['q1a','q1b','q2a','q2b','q3a','q3b','q4'].forEach(id => {
+    ['q2','q3','q4'].forEach(id => {
       const el = document.getElementById(id);
       if (el) { el.value = ''; el.style.borderColor = 'var(--rule)'; }
     });
@@ -1024,9 +1027,9 @@ const timer = setInterval(() => {
 // 🔐 비밀번호 체크
 function checkPassword() {
   const input = document.getElementById("passwordInput").value.trim();
-  const PASSWORD = "since 2006","Since 2006","since2006", Since2006; // 👉 여기 바꿔
+  const PASSWORDS = ["since 2006", "Since 2006", "since2006", "Since2006"];
 
-  if (input === PASSWORD) {
+  if (PASSWORDS.includes(input)) {
     document.getElementById("passwordScreen").style.display = "none";
     document.getElementById("quizScreen").style.display = "block";
   } else {
